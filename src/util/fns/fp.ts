@@ -13,7 +13,10 @@ type Equals = (x: unknown) => (y: unknown) => boolean
 export const equals: Equals = x => y => eqStrict.equals(x, y)
 
 type Includes = <T>(x: T) => Predicate<T[]>
-export const includes: Includes = <T>(x: T) => (arr: T[]) => arr.includes(x)
+export const includes: Includes = x => arr => arr.includes(x)
+
+type Length = <T>(x: T[]) => number
+export const length: Length = (arr) => arr.length
 
 type PropEq = <T, U>(lens: Lens<T, U>, value: U) => Predicate<T>
 export const propEq: PropEq = (lens, value) => data =>

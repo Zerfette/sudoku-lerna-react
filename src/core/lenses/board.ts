@@ -1,6 +1,7 @@
 import { Lens } from 'monocle-ts'
-import { Cell, Smalls } from '~core/types'
+import { Board, Cell, Smalls, State } from '~core/types'
 
+export const boardLens: Lens<State, Board> = Lens.fromProp<State>()('board')
 export const valueLens: Lens<Cell, number> = Lens.fromProp<Cell>()('value')
 export const rowLens: Lens<Cell, number> = Lens.fromProp<Cell>()('row')
 export const colLens: Lens<Cell, number> = Lens.fromProp<Cell>()('col')

@@ -1,7 +1,8 @@
 import { Lens } from 'monocle-ts'
-import { Toggles } from '~core/types'
+import { State, Toggles } from '~core/types'
 
-type ToggleLens = Lens<Toggles, boolean>
-
-export const lockedLens: ToggleLens = Lens.fromProp<Toggles>()('locked')
-export const mouseDownLens: ToggleLens = Lens.fromProp<Toggles>()('mouseDown')
+export const togglesLens: Lens<State, Toggles> = Lens.fromProp<State>()('toggles')
+export const lockedLens: Lens<Toggles, boolean> = Lens.fromProp<Toggles>()('locked')
+export const mouseDownLens: Lens<Toggles, boolean> = Lens.fromProp<Toggles>()(
+  'mouseDown'
+)
