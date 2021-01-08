@@ -60,9 +60,9 @@
   "_moduleAliasIgnoreWarning": true,
   "_moduleAliases": {
     "~app": "src/app",
+    "~core": "src/core",
     "~lib": "src/lib",
     "~routes": "src/routes",
-    "~store": "src/store",
     "~styles": "src/styles",
     "~util": "src/util"
   }
