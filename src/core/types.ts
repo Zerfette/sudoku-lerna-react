@@ -1,6 +1,7 @@
 export type Smalls = number[] | never[]
 
 export type Cell = {
+  ind: number
   value: number
   row: number
   col: number

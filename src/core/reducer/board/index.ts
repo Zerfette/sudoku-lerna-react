@@ -11,9 +11,25 @@ import {
   updateBig,
   updateSmall
 } from './mutations'
+import {puzzleToBoard} from '~util/fns'
+
+const testPuzzle = [
+  [0,3,9,0,7,0,2,5,1],
+  [7,0,0,1,2,0,0,3,0],
+  [0,1,5,0,9,3,0,0,7],
+  [0,0,2,0,0,1,0,4,0],
+  [0,0,0,0,0,0,0,0,0],
+  [0,8,0,4,0,0,6,0,0],
+  [4,0,0,3,6,0,1,9,0],
+  [0,9,0,0,4,7,0,0,6],
+  [3,6,8,0,1,0,7,2,0]
+]
 
 type Reducer = (board: Board, action: AnyAction) => Board
-const reducer: Reducer = (board = clearBoard(), { type, payload }) => {
+const reducer: Reducer = (
+  board = puzzleToBoard(testPuzzle),
+  { type, payload }
+) => {
   switch (type) {
     case 'AUTOSOLVE':
       return autosolve(board, payload)

@@ -18,6 +18,7 @@ export const includes: Includes = x => arr => arr.includes(x)
 type Length = <T>(x: T[]) => number
 export const length: Length = (arr) => arr.length
 
+
 type PropEq = <T, U>(lens: Lens<T, U>, value: U) => Predicate<T>
 export const propEq: PropEq = (lens, value) => data =>
   pipe(data, lens.get, equals(value))
