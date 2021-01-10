@@ -63,7 +63,7 @@
     "~core": "src/core",
     "~lib": "src/lib",
     "~routes": "src/routes",
-    "~styles": "src/styles",
+    "~style": "src/style",
     "~util": "src/util"
   }
 }

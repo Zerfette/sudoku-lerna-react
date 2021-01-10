@@ -22,7 +22,7 @@ import {
   regLens,
   selectedLens,
   colorLens,
-  lockedLens,
+  lockedLens
 } from '~core/lenses/board'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
 import { Lens } from 'monocle-ts'
@@ -89,7 +89,10 @@ export const lockBoard: Mutation<Board, {}> = board =>
   )
 
 /******************* numberSelect *******************/
-export const numberSelect: Mutation<Board, { value: number }> = (board, { value }) =>
+export const numberSelect: Mutation<Board, { value: number }> = (
+  board,
+  { value }
+) =>
   pipe(
     board,
     map(
@@ -103,10 +106,10 @@ export const numberSelect: Mutation<Board, { value: number }> = (board, { value 
   )
 
 /******************* selectCell *******************/
-export const selectCell: Mutation<Board, { ind: number; shouldClear: boolean }> = (
-  board,
-  { ind, shouldClear }
-) =>
+export const selectCell: Mutation<
+  Board,
+  { ind: number; shouldClear: boolean }
+> = (board, { ind, shouldClear }) =>
   pipe(
     board,
     map(
@@ -120,17 +123,23 @@ export const selectCell: Mutation<Board, { ind: number; shouldClear: boolean }> 
   )
 
 /******************* setPuzzle *******************/
-export const setPuzzle: Mutation<Board, Puzzle> = (_, puzzle) => puzzleToBoard(puzzle)
+export const setPuzzle: Mutation<Board, { puzzle: Puzzle }> = (_, { puzzle }) =>
+  puzzleToBoard(puzzle)
 
 /******************* updateBig *******************/
-export const updateBig: Mutation<Board, { value: number }> = (board, { value }) =>
-  pipe(board, map(when(propEq(selectedLens, true), valueLens.set(value))))
+export const updateBig: Mutation<Board, { value: number }> = (
+  board,
+  { value }
+) => pipe(board, map(when(propEq(selectedLens, true), valueLens.set(value))))
 
 /******************* updateSmall *******************/
-export const updateSmall: Mutation<Board, {
-  lens: Lens<Cell, Smalls>
-  value: number
-}> = (board, { lens, value }) =>
+export const updateSmall: Mutation<
+  Board,
+  {
+    lens: Lens<Cell, Smalls>
+    value: number
+  }
+> = (board, { lens, value }) =>
   pipe(
     board,
     map(

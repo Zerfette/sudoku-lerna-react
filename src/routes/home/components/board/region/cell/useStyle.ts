@@ -4,10 +4,10 @@ import { Cell } from '~core/types'
 type UseStyle = (cell: Cell) => Record<string, string>
 export const useStyle: UseStyle = ({ selected }) => {
   const {
-    colors: { teal, purple },
+    colors: { cyan, purple },
     space
   } = useTheme()
-  const isSelected = useColorModeValue(teal[200], teal[700])
+  const isSelected = useColorModeValue(cyan[200], cyan[700])
   const isNotSelected = useColorModeValue(purple[200], purple[800])
 
   return {
