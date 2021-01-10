@@ -1,6 +1,6 @@
 import { KeyboardEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { increment, pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/function'
 import { setToggle, updateBig, updateSmall } from '~core/actions'
 import { cornerLens, middleLens } from '~core/lenses/board'
 import { getSelectedLength } from '~core/selectors/board'
@@ -19,13 +19,15 @@ export const useModel: UseModel = () => {
 
   const onMouseDown = () =>
     pipe({ lens: mouseDownLens, value: true }, setToggle, dispatch)
+
   const onMouseUp = () =>
     pipe({ lens: mouseDownLens, value: false }, setToggle, dispatch)
+
   const onKeyDown: OnKeyDown = ev => {
     const { key, altKey, ctrlKey } = ev
     const value = +key
-    console.log('sdfsdfasdf')
-    if (selectedHasLength && value > 0 && value < 10) {
+
+    if (selectedHasLength && value >= 0 && value < 10) {
       ev.stopPropagation()
       ev.preventDefault()
       if (!altKey && !ctrlKey) {
@@ -39,5 +41,6 @@ export const useModel: UseModel = () => {
     }
   }
 
+  
   return { onMouseDown, onMouseUp, onKeyDown }
 }

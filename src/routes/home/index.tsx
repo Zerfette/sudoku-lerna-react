@@ -11,7 +11,6 @@ export const Home: FC = () => {
     <Grid
       minH={'100vh'}
       minW={'100vw'}
-      p={3}
       tabIndex={0}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
