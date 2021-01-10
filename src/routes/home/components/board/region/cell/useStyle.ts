@@ -7,13 +7,12 @@ export const useStyle: UseStyle = ({ selected }) => {
     colors: { teal, purple },
     space
   } = useTheme()
-  const isSelected = useColorModeValue(teal[200], teal[700]) 
+  const isSelected = useColorModeValue(teal[200], teal[700])
   const isNotSelected = useColorModeValue(purple[200], purple[800])
 
   return {
     bg: selected ? isSelected : isNotSelected,
     height: space[14],
-    width: space[14],
-    userSelect: 'none'
+    width: space[14]
   }
 }

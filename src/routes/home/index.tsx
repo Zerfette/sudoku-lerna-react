@@ -4,13 +4,19 @@ import { ColorModeSwitcher } from '~lib/ColorModeSwitcher'
 import { Board } from './components'
 import { useModel } from './useModel'
 
-const style = { minH: '100vh', minW: '100vw', p: 3 }
-
 export const Home: FC = () => {
-  const { onMouseDown, onMouseUp } = useModel()
+  const { onMouseDown, onMouseUp, onKeyDown } = useModel()
 
   return (
-    <Grid {...{ ...style, onMouseDown, onMouseUp }}>
+    <Grid
+      minH={'100vh'}
+      minW={'100vw'}
+      p={3}
+      tabIndex={0}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
+      onKeyDown={onKeyDown}
+    >
       <Board />
       <ColorModeSwitcher justifySelf='flex-end' />
     </Grid>
