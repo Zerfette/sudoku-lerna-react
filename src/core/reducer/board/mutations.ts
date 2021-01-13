@@ -21,7 +21,7 @@ import {
   colLens,
   regLens,
   selectedLens,
-  colorLens,
+  highlightedLens,
   lockedLens
 } from '~core/lenses/board'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
@@ -44,7 +44,11 @@ export const autosolve: Mutation<Board, { ind: number; value: number }> = (
     board,
     modifyAt(
       ind,
-      flow(valueLens.set(value), colorLens.set(true), selectedLens.set(false))
+      flow(
+        valueLens.set(value),
+        highlightedLens.set(true),
+        selectedLens.set(false)
+      )
     ),
     optFold(
       () => board,
@@ -74,7 +78,7 @@ export const clearBoard: () => Board = constant(
 
 /******************* clearSelection *******************/
 export const clearSelection: Mutation<Board, {}> = board =>
-  pipe(board, map(selectedLens.set(false)))
+  pipe(board, map(flow(selectedLens.set(false), highlightedLens.set(false))))
 
 /******************* lockBoard *******************/
 export const lockBoard: Mutation<Board, {}> = board =>
@@ -97,13 +101,17 @@ export const numberSelect: Mutation<Board, { value: number }> = (
     board,
     map(
       flow(
-        colorLens.set(false),
+        highlightedLens.set(false),
         selectedLens.set(false),
-        when(propEq(valueLens, value), colorLens.set(true)),
+        when(propEq(valueLens, value), highlightedLens.set(true)),
         when(isValidPlacement(board)(value), selectedLens.set(true))
       )
     )
   )
+
+/******************* selectAll *******************/
+export const selectAll: Mutation<Board, {}> = board =>
+  pipe(board, map(when(propEq(lockedLens, false), selectedLens.set(true))))
 
 /******************* selectCell *******************/
 export const selectCell: Mutation<
@@ -114,7 +122,7 @@ export const selectCell: Mutation<
     board,
     map(
       flow(
-        colorLens.set(false),
+        highlightedLens.set(false),
         when(constant(shouldClear), selectedLens.set(false))
       )
     ),

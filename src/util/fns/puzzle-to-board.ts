@@ -27,7 +27,7 @@ const toCell: ToCell = rowIndex => (colIndex, value) => ({
   col: colIndex,
   reg: getRegion(rowIndex, colIndex),
   selected: false,
-  color: false,
+  highlighted: false,
   locked: !eqNumber.equals(value, 0),
   corner: [],
   middle: []

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redeclare */
 import {ColorModeSwitcher} from './ColorModeSwitcher'
 
 export { ColorModeSwitcher }

@@ -8,7 +8,7 @@ export type Cell = {
   reg: number
   selected: boolean
   locked: boolean
-  color: boolean
+  highlighted: boolean
   corner: Smalls
   middle: Smalls
 }
