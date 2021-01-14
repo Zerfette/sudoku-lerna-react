@@ -1,16 +1,14 @@
 import { mapWithIndex, flatten } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
-import { fold, monoidSum, monoidProduct } from 'fp-ts/Monoid'
+import { fold, monoidSum } from 'fp-ts/Monoid'
 import { bimap } from 'fp-ts/Tuple'
 import { indLens } from '~core/lenses/board'
 import { Board, Cell, Puzzle } from '~core/types'
+import { times } from '~util/fns'
 
 type ToTuple = (r: number, c: number) => [number, number]
 const toTuple: ToTuple = (r, c) => [r, c]
-
-type Times = (x: number) => (y: number) => number
-const times: Times = x => y => monoidProduct.concat(x, y)
 
 type Op = (x: number) => number
 const op: Op = x => pipe(x, times(1/3), Math.floor) // Math.floor(x / 3)

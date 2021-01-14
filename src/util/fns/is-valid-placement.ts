@@ -1,11 +1,12 @@
-import { filter, map } from 'fp-ts/Array'
+import { elem, filter, map } from 'fp-ts/Array'
+import { eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
-import { and, anyPass, includes, not, propEq } from './fp'
+import { and, anyPass, not, propEq } from './fp'
 import { rowLens, colLens, regLens, valueLens } from '~core/lenses/board'
 import { Board, Cell } from '~core/types'
 
 type NoConflicts = (board: Board, cell: Cell, possibleValue: number) => boolean
-const noConflicts: NoConflicts = (board, {row, col, reg}, possibleValue) =>
+const noConflicts: NoConflicts = (board, { row, col, reg }, possibleValue) =>
   pipe(
     board,
     filter(
@@ -16,7 +17,7 @@ const noConflicts: NoConflicts = (board, {row, col, reg}, possibleValue) =>
       ])
     ),
     map(valueLens.get),
-    includes(possibleValue),
+    elem(eqNumber)(possibleValue),
     not
   )
 

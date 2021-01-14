@@ -1,7 +1,15 @@
 import { fold } from 'fp-ts/boolean'
+import { some } from 'fp-ts/Array'
 import { eqStrict } from 'fp-ts/Eq'
 import { constant, Endomorphism, pipe, Predicate } from 'fp-ts/function'
+import { Magma } from 'fp-ts/Magma'
+import { monoidProduct, monoidString } from 'fp-ts/Monoid'
+import { gt, ordNumber } from 'fp-ts/Ord'
 import { Lens } from 'monocle-ts'
+
+const magmaModulo: Magma<number> = {
+  concat: (x, y) => x % y
+}
 
 type And = (x: boolean) => (y: boolean) => boolean
 export const and: And = x => y => x && y
@@ -12,12 +20,24 @@ export const not: Not = x => !x
 type Equals = (x: unknown) => (y: unknown) => boolean
 export const equals: Equals = x => y => eqStrict.equals(x, y)
 
-type Includes = <T>(x: T) => Predicate<T[]>
-export const includes: Includes = x => arr => arr.includes(x)
+type Modulo = (x: number) => (y: number) => number
+export const modulo: Modulo = x => y => magmaModulo.concat(y, x)
 
-type Length = <T>(x: T[]) => number
-export const length: Length = (arr) => arr.length
+type Times = (x: number) => (y: number) => number
+export const times: Times = x => y => monoidProduct.concat(x, y)
 
+type ZeroPad = (x: number) => string
+export const zeroPad: ZeroPad = x =>
+  pipe(
+    gt(ordNumber)(x, 9),
+    fold(
+      constant(monoidString.concat('0', x.toString())),
+      constant(x.toString())
+    )
+  )
+
+type Length = <T>(arr: T[]) => number
+export const length: Length = arr => arr.length
 
 type PropEq = <T, U>(lens: Lens<T, U>, value: U) => Predicate<T>
 export const propEq: PropEq = (lens, value) => data =>
@@ -31,7 +51,11 @@ export const propSatisfies: PropSatisfies = (lens, predicate) => data =>
   pipe(data, lens.get, predicate)
 
 type AnyPass = <T>(fns: Predicate<T>[]) => Predicate<T>
-export const anyPass: AnyPass = fns => data => fns.some(fn => fn(data))
+export const anyPass: AnyPass = fns => data =>
+  pipe(
+    fns,
+    some(fn => fn(data))
+  )
 
 type When = <T>(predicate: Predicate<T>, fn: Endomorphism<T>) => Endomorphism<T>
 export const when: When = (predicate, fn) => data =>

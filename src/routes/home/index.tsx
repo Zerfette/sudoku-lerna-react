@@ -1,14 +1,14 @@
 import React, { FC } from 'react'
-import { Grid } from '@chakra-ui/react'
+import { Center, Flex, Stack } from '@chakra-ui/react'
 import { ColorModeSwitcher } from '~lib/ColorModeSwitcher'
-import { Board } from './components'
+import { Board, Timer } from './components'
 import { useModel } from './useModel'
 
 export const Home: FC = () => {
   const { onMouseDown, onMouseUp, onKeyDown } = useModel()
 
   return (
-    <Grid
+    <Flex
       minH={'100vh'}
       minW={'100vw'}
       tabIndex={0}
@@ -16,8 +16,15 @@ export const Home: FC = () => {
       onMouseUp={onMouseUp}
       onKeyDown={onKeyDown}
     >
-      <Board />
-      <ColorModeSwitcher justifySelf='flex-end' />
-    </Grid>
+      <Center flex='1'>
+        <Stack>
+          <Board />
+          <Center>
+            <Timer />
+          </Center>
+        </Stack>
+      </Center>
+      <ColorModeSwitcher />
+    </Flex>
   )
 }

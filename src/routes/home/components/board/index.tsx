@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from 'react'
 import { SimpleGrid } from '@chakra-ui/react'
-import { mapWithIndex } from 'fp-ts/Array'
+import { map, mapWithIndex, range } from 'fp-ts/Array'
 import { pipe } from 'fp-ts/function'
 import { Cell } from '~core/types'
 import { useClickAwayListener } from '~util/hooks'
@@ -24,8 +24,8 @@ export const Board: FC = () => {
       height='fit-content'
     >
       {pipe(
-        new Array(9).fill(0),
-        mapWithIndex(getRegion),
+        range(0, 8),
+        map(getRegion),
         mapWithIndex(toRegion)
       )}
     </SimpleGrid>

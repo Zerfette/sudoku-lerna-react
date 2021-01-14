@@ -1,3 +1,4 @@
 import { useClickAwayListener } from './useClickAwayListener'
+import { useStopwatch } from './useStopwatch'
 
-export { useClickAwayListener }
+export { useClickAwayListener, useStopwatch }

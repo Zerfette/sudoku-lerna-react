@@ -36,6 +36,7 @@ export const useModel: UseModel = () => {
   const onKeyDown: OnKeyDown = ev => {
     const { key, altKey, ctrlKey } = ev
     ev.stopPropagation()
+    if (key !== 'F12') ev.preventDefault()
     if (isValue(key)) {
       const value = +key
       if (selectedHasLength) {

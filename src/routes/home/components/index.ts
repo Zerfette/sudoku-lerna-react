@@ -1,3 +1,4 @@
 import { Board } from './board'
+import { Timer } from './timer'
 
-export { Board }
+export { Board, Timer }

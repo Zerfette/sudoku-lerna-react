@@ -1,4 +1,13 @@
-import { difference, lookup, getMonoid, map, modifyAt, sort } from 'fp-ts/Array'
+import {
+  difference,
+  elem,
+  lookup,
+  getMonoid,
+  map,
+  modifyAt,
+  replicate,
+  sort
+} from 'fp-ts/Array'
 import { fold as boolFold } from 'fp-ts/boolean'
 import { eqNumber } from 'fp-ts/Eq'
 import { constant, identity, flow, not, pipe } from 'fp-ts/function'
@@ -8,7 +17,6 @@ import {
   anyPass,
   equals,
   ifElse,
-  includes,
   propEq,
   propSatisfies,
   when,
@@ -71,26 +79,24 @@ export const autosolve: Mutation<Board, { ind: number; value: number }> = (
 }
 
 /******************* clearBoard *******************/
-const nine = new Array(9).fill(0)
 export const clearBoard: () => Board = constant(
-  pipe(nine, map(constant(nine)), puzzleToBoard)
+  pipe(replicate(9, 0), map(constant(replicate(9, 0))), puzzleToBoard)
 )
 
 /******************* clearSelection *******************/
-export const clearSelection: Mutation<Board, {}> = board =>
-  pipe(board, map(flow(selectedLens.set(false), highlightedLens.set(false))))
+export const clearSelection: Mutation<Board, {}> = pipe(
+  map(flow(selectedLens.set(false), highlightedLens.set(false)))
+)
 
 /******************* lockBoard *******************/
-export const lockBoard: Mutation<Board, {}> = board =>
-  pipe(
-    board,
-    map(
-      flow(
-        selectedLens.set(false),
-        when(propSatisfies(valueLens, not(equals(0))), lockedLens.set(true))
-      )
+export const lockBoard: Mutation<Board, {}> = pipe(
+  map(
+    flow(
+      selectedLens.set(false),
+      when(propSatisfies(valueLens, not(equals(0))), lockedLens.set(true))
     )
   )
+)
 
 /******************* numberSelect *******************/
 export const numberSelect: Mutation<Board, { value: number }> = (
@@ -110,8 +116,8 @@ export const numberSelect: Mutation<Board, { value: number }> = (
   )
 
 /******************* selectAll *******************/
-export const selectAll: Mutation<Board, {}> = board =>
-  pipe(board, map(when(propEq(lockedLens, false), selectedLens.set(true))))
+export const selectAll: Mutation<Board, {}> =
+  pipe(map(when(propEq(lockedLens, false), selectedLens.set(true))))
 
 /******************* selectCell *******************/
 export const selectCell: Mutation<
@@ -157,7 +163,7 @@ export const updateSmall: Mutation<
           pipe(
             cell,
             lens.get,
-            includes(value),
+            elem(eqNumber)(value),
             boolFold(
               constant(
                 lens.set(
