@@ -37,8 +37,8 @@ import { Lens } from 'monocle-ts'
 
 const { concat } = getMonoid<number>()
 
-/******************* autosolve *******************/
-export const autosolve: Mutation<Board, { ind: number; value: number }> = (
+/******************* autoSolve *******************/
+export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
   board,
   { ind, value }
 ) => {

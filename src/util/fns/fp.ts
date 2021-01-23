@@ -39,6 +39,9 @@ export const zeroPad: ZeroPad = x =>
 type Length = <T>(arr: T[]) => number
 export const length: Length = arr => arr.length
 
+type Includes = <T>(x: T) => (arr: T[]) => boolean
+export const includes: Includes = x => arr => arr.includes(x)
+
 type PropEq = <T, U>(lens: Lens<T, U>, value: U) => Predicate<T>
 export const propEq: PropEq = (lens, value) => data =>
   pipe(data, lens.get, equals(value))

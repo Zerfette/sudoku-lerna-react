@@ -3,7 +3,7 @@ type Action = (
 ) => <T>(payload: T) => { type: string; payload: T }
 const action: Action = type => payload => ({ type, payload })
 
-export const autosolve = action('AUTOSOLVE')
+export const autoSolve = action('AUTO_SOLVE')
 export const clearBoard = action('CLEAR_BOARD')({})
 export const clearSelection = action('CLEAR_SELECTION')({})
 export const createPuzzle = action('CREATE_PUZZLE')({})

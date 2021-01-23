@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux'
 import { Board } from '~core/types'
 import {
-  autosolve,
+  autoSolve,
   setPuzzle,
   clearSelection,
   clearBoard,
@@ -32,8 +32,8 @@ const reducer: Reducer = (
   { type, payload }
 ) => {
   switch (type) {
-    case 'AUTOSOLVE':
-      return autosolve(board, payload)
+    case 'AUTO_SOLVE':
+      return autoSolve(board, payload)
     case 'CHANGE_PUZZLE':
       return setPuzzle(board, payload)
     case 'CLEAR_SELECTION':

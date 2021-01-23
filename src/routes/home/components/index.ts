@@ -1,4 +1,5 @@
+import { AutoSolveSwitch } from './autoSolveSwitch'
 import { Board } from './board'
 import { Timer } from './timer'
 
-export { Board, Timer }
+export { AutoSolveSwitch, Board, Timer }
