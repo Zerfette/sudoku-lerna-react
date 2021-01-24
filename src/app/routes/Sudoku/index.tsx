@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
-import { Center, Flex, Stack } from '@chakra-ui/react'
-import { ColorModeSwitcher } from '~lib/ColorModeSwitcher'
-import { AutoSolveSwitch, Board, Timer } from './components'
+import { Center, Flex, Spacer, Stack } from '@chakra-ui/react'
+import { Board, Settings, Timer } from './components'
 import { useModel } from './useModel'
 import { useAutoSolve } from './useAutoSolve'
 
@@ -10,7 +9,7 @@ export const Sudoku: FC = () => {
   useAutoSolve()
 
   return (
-    <Flex
+    <Center
       minH={'100vh'}
       minW={'100vw'}
       tabIndex={0}
@@ -18,16 +17,14 @@ export const Sudoku: FC = () => {
       onMouseUp={onMouseUp}
       onKeyDown={onKeyDown}
     >
-      <Center flex='1'>
-        <Stack>
-          <AutoSolveSwitch />
-          <Board />
-          <Center>
-            <Timer />
-          </Center>
-        </Stack>
-      </Center>
-      <ColorModeSwitcher />
-    </Flex>
+      <Stack>
+        <Flex>
+          <Timer />
+          <Spacer />
+          <Settings />
+        </Flex>
+        <Board />
+      </Stack>
+    </Center>
   )
 }

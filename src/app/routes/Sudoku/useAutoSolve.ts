@@ -56,9 +56,12 @@ export const useAutoSolve = (): void => {
 
   //When there is only one selected try to autoSolve
   useEffect(() => {
-    const singlePossible = pipe(cell, length, equals(1))
-    const value = pipe(head(cell), getOrElse(constant(0)))
-    if (singlePossible && shouldAutoSolve)
-      dispatch(autoSolve({ ind: indLens.get(selectionHead), value }))
+    if (shouldAutoSolve) {
+      const singlePossible = pipe(cell, length, equals(1))
+      if (singlePossible) {
+        const value = pipe(head(cell), getOrElse(constant(0)))
+        dispatch(autoSolve({ ind: indLens.get(selectionHead), value }))
+      }
+    }
   }, [cell])
 }
