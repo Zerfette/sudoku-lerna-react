@@ -59,11 +59,9 @@
   },
   "_moduleAliasIgnoreWarning": true,
   "_moduleAliases": {
-    "~app": "src/app",
-    "~core": "src/core",
-    "~lib": "src/lib",
-    "~routes": "src/routes",
-    "~style": "src/style",
-    "~util": "src/util"
+    "~core": "src/app/core",
+    "~lib": "src/app/lib",
+    "~routes": "src/app/routes",
+    "~util": "src/app/util"
   }
 }
