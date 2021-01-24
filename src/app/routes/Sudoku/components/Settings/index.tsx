@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import {
+  Heading,
   IconButton,
   Modal,
   ModalBody,
@@ -9,6 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  Tooltip,
   useDisclosure,
   useTheme
 } from '@chakra-ui/react'
@@ -21,21 +23,23 @@ export const Settings: FC = () => {
 
   return (
     <>
-      <IconButton
-        m={space[3]}
-        size='md'
-        fontSize='lg'
-        color='current'
-        marginLeft='2'
-        onClick={onOpen}
-        icon={<FaCog />}
-        aria-label='Open Settings'
-      />
+      <Tooltip label='Settings'>
+        <IconButton
+          size='md'
+          fontSize='lg'
+          color='current'
+          onClick={onOpen}
+          icon={<FaCog />}
+          aria-label='Open Settings'
+        />
+      </Tooltip>
 
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal onClose={onClose} isOpen={isOpen} isCentered size='xs'>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Settings</ModalHeader>
+          <ModalHeader>
+            <Heading size='lg'>Settings</Heading>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack>

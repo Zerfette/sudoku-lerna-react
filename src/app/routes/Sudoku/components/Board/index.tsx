@@ -19,7 +19,6 @@ export const Board: FC = () => {
       ref={ref}
       columns={3}
       spacing={3}
-      m={3}
       width='fit-content'
       height='fit-content'
     >
