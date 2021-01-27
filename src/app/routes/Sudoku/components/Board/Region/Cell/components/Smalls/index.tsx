@@ -1,13 +1,15 @@
 import React, { FC } from 'react'
-import { Text } from '@chakra-ui/react'
+import { Center, Flex, Text } from '@chakra-ui/react'
 import { Cell } from '~core/types'
+import { useModel } from './useModel'
 import { useStyle } from './useStyle'
 
-export const Smalls: FC<{ cell: Cell }> = ({ cell: { corner, middle } }) => {
+export const Smalls: FC<{ cell: Cell }> = ({ cell }) => {
   const { cornerColor, middleColor } = useStyle()
+  const { cornerNumbers, middleNumbers } = useModel(cell)
 
   return (
-    <>
+    <Flex direction='column' height='100%'>
       <Text
         align='right'
         fontSize='s'
@@ -15,11 +17,13 @@ export const Smalls: FC<{ cell: Cell }> = ({ cell: { corner, middle } }) => {
         isTruncated
         color={cornerColor}
       >
-        {corner}
+        {cornerNumbers}
       </Text>
-      <Text align='center' fontSize='s' isTruncated color={middleColor}>
-        {middle}
-      </Text>
-    </>
+      <Center grow='1'>
+        <Text fontSize='s' isTruncated color={middleColor}>
+          {middleNumbers}
+        </Text>
+      </Center>
+    </Flex>
   )
 }
