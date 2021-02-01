@@ -1,7 +1,8 @@
+import { AutoSolve } from './AutoSolve'
 import { Board } from './Board'
+import { DarkTheme } from './DarkTheme'
 import { Edit } from './Edit'
 import { Help } from './Help'
-import { Settings } from './Settings'
 import { Timer } from './Timer'
 
-export { Board, Edit, Help, Settings, Timer }
+export { AutoSolve, Board, DarkTheme, Edit, Help, Timer }

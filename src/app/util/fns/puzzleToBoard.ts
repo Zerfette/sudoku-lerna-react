@@ -17,7 +17,7 @@ const getRegion: GetRegion = (r, c) =>
 type ToCell = (rowIndex: number) => (colIndex: number, value: number) => Cell
 const toCell: ToCell = rowIndex => (colIndex, value) => ({
   ind: 0,
-  value: value,
+  value,
   row: rowIndex,
   col: colIndex,
   reg: getRegion(rowIndex, colIndex),
