@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { Center, Flex, Spacer, Stack } from '@chakra-ui/react'
-import { Board, Help, Settings, Timer } from './components'
+import { Board, Edit, Help, Settings, Timer } from './components'
 import { useModel } from './useModel'
 import { useAutoSolve } from './useAutoSolve'
 
@@ -21,6 +21,7 @@ export const Sudoku: FC = () => {
         <Flex align='center'>
           <Timer />
           <Spacer />
+          <Edit />
           <Settings />
           <Help />
         </Flex>

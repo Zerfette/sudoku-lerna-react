@@ -25,12 +25,12 @@ export const Settings: FC = () => {
     <>
       <Tooltip label='Settings'>
         <IconButton
+          ml={space[3]}
           size='md'
           fontSize='lg'
-          color='current'
           onClick={onOpen}
           icon={<FaCog />}
-          aria-label='Open Settings'
+          aria-label='Settings'
         />
       </Tooltip>
 

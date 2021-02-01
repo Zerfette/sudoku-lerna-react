@@ -26,7 +26,7 @@ export const useModel: UseModel = () => {
   } = useStopwatch()
 
   const Icon = isRunning ? FaPause : FaPlay
-  const iconLabel = isRunning ? 'Pause' : 'Resume'
+  const iconLabel = isRunning ? 'Pause Timer' : 'Resume Timer'
 
   const toggleTimer = () => {
     isRunning ? stopTimer() : startTimer()

@@ -13,6 +13,7 @@ import { useModel } from './useModel'
 export const Timer = () => {
   const { resetTimer, toggleTimer, timerReadout, Icon, iconLabel } = useModel()
   const { space } = useTheme()
+  
   return (
     <Flex>
       <Text fontSize='4xl'>{timerReadout}</Text>
@@ -28,7 +29,7 @@ export const Timer = () => {
         </Tooltip>
       </Center>
       <Center>
-        <Tooltip label='Reset'>
+        <Tooltip label='Reset Timer'>
           <IconButton
             ml={space[3]}
             aria-label='Reset Timer'

@@ -28,9 +28,7 @@ export const Help: FC = () => {
       <Tooltip label='Help'>
         <IconButton
           ml={space[3]}
-          size='md'
           fontSize='lg'
-          color='current'
           onClick={onOpen}
           icon={<FaQuestion />}
           aria-label='Help'
