@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { getMonoid as getArrayMonoid } from 'fp-ts/Array'
 import { constant, pipe } from 'fp-ts/function'
 import { fold as monoidFold, monoidSum } from 'fp-ts/Monoid'
@@ -9,11 +10,16 @@ import {
   Option,
   some
 } from 'fp-ts/Option'
+import { setToggle } from '~core/actions'
+import { timerIsRunningLens } from '~core/toggles/optics'
+import { getTimerIsRunning } from '~core/toggles/selectors'
 
 const arrayOptionMonoid = pipe(getArrayMonoid<number>(), getOptionMonoid)
 
 const useTimer = () => {
-  const [isRunning, setIsRunning] = useState(false)
+  const isRunning = useSelector(getTimerIsRunning)
+  const dispatch = useDispatch()
+  const setIsRunning = (value: boolean) => pipe({lens: timerIsRunningLens, value}, setToggle, dispatch)
   const [elapsedTime, setElapsedTime] = useState(0)
 
   useEffect(() => {

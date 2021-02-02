@@ -16,7 +16,7 @@ import {
 import { useModel } from './useModel'
 
 export const StartOver: FC = () => {
-  const { cancelRef, dispatchAction, isOpen, onClose, onOpen } = useModel()
+  const { cancelRef, dispatchAction, isOpen, onClose, onClick } = useModel()
 
   return (
     <>
@@ -24,7 +24,7 @@ export const StartOver: FC = () => {
         <IconButton
           ml={3}
           fontSize='lg'
-          onClick={onOpen}
+          onClick={onClick}
           icon={<FaSync />}
           aria-label='Start Over'
         />

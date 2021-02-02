@@ -6,13 +6,11 @@ import {
   IconButton,
   Text,
   Tooltip,
-  useTheme
 } from '@chakra-ui/react'
 import { useModel } from './useModel'
 
 export const Timer = () => {
   const { resetTimer, toggleTimer, timerReadout, Icon, iconLabel } = useModel()
-  const { space } = useTheme()
   
   return (
     <Flex>
@@ -20,7 +18,7 @@ export const Timer = () => {
       <Center>
         <Tooltip label={iconLabel}>
           <IconButton
-            ml={space[3]}
+            ml={3}
             aria-label={`${iconLabel} Timer`}
             size='sm'
             onClick={toggleTimer}
@@ -31,7 +29,7 @@ export const Timer = () => {
       <Center>
         <Tooltip label='Reset Timer'>
           <IconButton
-            ml={space[3]}
+            ml={3}
             aria-label='Reset Timer'
             size='sm'
             onClick={resetTimer}

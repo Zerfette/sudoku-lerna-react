@@ -2,7 +2,7 @@ import { AnyAction } from 'redux'
 import { Toggles } from '~core/types'
 import { toggle, setToggle } from './mutations'
 
-const dflt = { mouseDown: false, autoSolve: false }
+const dflt = { autoSolve: false, mouseDown: false, timerIsRunning: false }
 
 type Reducer = (toggles: Toggles, action: AnyAction) => Toggles
 const reducer: Reducer = (toggles = dflt, { type, payload }) => {

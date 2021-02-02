@@ -14,22 +14,20 @@ import {
   Stack,
   Text,
   Tooltip,
-  useDisclosure,
-  useTheme
 } from '@chakra-ui/react'
 import { FaQuestion } from 'react-icons/fa'
+import { useModel } from './useModel'
 
 export const Help: FC = () => {
-  const { space } = useTheme()
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onClick, onClose } = useModel()
 
   return (
     <>
       <Tooltip label='Help'>
         <IconButton
-          ml={space[3]}
+          ml={3}
           fontSize='lg'
-          onClick={onOpen}
+          onClick={onClick}
           icon={<FaQuestion />}
           aria-label='Help'
         />
@@ -50,7 +48,7 @@ export const Help: FC = () => {
           <ModalCloseButton />
           <ModalBody>
             <Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Selecting One or More Cells</Heading>
                 <Divider />
                 <Text fontSize='sm'>
@@ -65,7 +63,7 @@ export const Help: FC = () => {
                   cells.
                 </Text>
               </Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Selecting Possible Placements </Heading>
                 <Divider />
                 <Text fontSize='sm'>
@@ -78,7 +76,7 @@ export const Help: FC = () => {
                   placements for the locked value in that cell.
                 </Text>
               </Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Clearing the Selection</Heading>
                 <Divider />
                 <Text fontSize='sm'>
@@ -86,7 +84,7 @@ export const Help: FC = () => {
                   current selection.
                 </Text>
               </Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Adding and Removing Values</Heading>
                 <Divider />
                 <Text fontSize='sm'>
@@ -99,7 +97,7 @@ export const Help: FC = () => {
                   remove the value from the selected cells.
                 </Text>
               </Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Adding and Removing Corner Notes</Heading>
                 <Divider />
                 <Text fontSize='sm'>
@@ -116,7 +114,7 @@ export const Help: FC = () => {
                   values from the selected cells.
                 </Text>
               </Stack>
-              <Stack mb={space[6]}>
+              <Stack mb={6}>
                 <Heading size='md'>Adding and Removing Middle Notes</Heading>
                 <Divider />
                 <Text fontSize='sm'>
