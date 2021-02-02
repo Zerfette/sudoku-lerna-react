@@ -30,7 +30,9 @@ import {
   regLens,
   selectedLens,
   highlightedLens,
-  lockedLens
+  lockedLens,
+  cornerLens,
+  middleLens
 } from '~core/board/optics'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
 import { Lens } from 'monocle-ts'
@@ -114,6 +116,22 @@ export const numberSelect: Mutation<Board, { value: number }> = (
       )
     )
   )
+
+/******************* resetBoard *******************/
+export const resetBoard: Mutation<Board, {}> = pipe(
+  map(
+    when(
+      propEq(lockedLens, false),
+      flow(
+        selectedLens.set(false),
+        highlightedLens.set(false),
+        valueLens.set(0),
+        cornerLens.set([]),
+        middleLens.set([])
+      )
+    )
+  )
+)
 
 /******************* selectAll *******************/
 export const selectAll: Mutation<Board, {}> = pipe(

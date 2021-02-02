@@ -7,6 +7,7 @@ import {
   DarkTheme,
   Edit,
   Help,
+  StartOver,
   Timer
 } from './components'
 import { useModel } from './useModel'
@@ -29,13 +30,14 @@ export const Sudoku: FC = () => {
         <Flex align='center'>
           <Timer />
           <Spacer />
+          <StartOver />
           <Edit />
           <AutoSolve />
           <DarkTheme />
           <Help />
         </Flex>
         <Board />
-      <Availables />
+        <Availables />
       </Stack>
     </Center>
   )

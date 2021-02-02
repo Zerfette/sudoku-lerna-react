@@ -8,6 +8,7 @@ import {
   clearBoard,
   lockBoard,
   numberSelect,
+  resetBoard,
   selectAll,
   selectCell,
   updateBig,
@@ -56,6 +57,8 @@ const reducer: Reducer = (
       return lockBoard(board, payload)
     case 'NUMBER_SELECT':
       return numberSelect(board, payload)
+    case 'RESET_BOARD':
+      return resetBoard(board, payload)
     case 'SELECT_ALL':
       return selectAll(board, payload)
     case 'SELECT_CELL':

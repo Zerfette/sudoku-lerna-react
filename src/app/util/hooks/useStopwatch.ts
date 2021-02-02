@@ -58,7 +58,10 @@ const useStopwatch = () => {
     elapsedTime: +elapsedTime.toFixed(1),
     laps,
     addLap: () => handleAddLap(),
-    resetTimer: () => handleReset(),
+    resetTimer: () => {
+      handleReset()
+      setIsRunning(true)
+    },
     startTimer: () => setIsRunning(true),
     stopTimer: () => setIsRunning(false),
     isRunning
