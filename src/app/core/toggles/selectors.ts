@@ -1,7 +1,6 @@
 import {
   autoSolveLens,
   mouseDownLens,
-  timerIsRunningLens, 
   togglesLens
 } from './optics'
 import { State } from '~core/types'
@@ -13,7 +12,3 @@ export const getAutoSolve: GetToggle = togglesLens.composeLens(autoSolveLens)
 
 export const getMouseDown: GetToggle = togglesLens.composeLens(mouseDownLens)
   .get
-
-export const getTimerIsRunning: GetToggle = togglesLens.composeLens(
-  timerIsRunningLens
-).get

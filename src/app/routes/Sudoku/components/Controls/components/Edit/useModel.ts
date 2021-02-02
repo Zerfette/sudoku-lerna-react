@@ -4,17 +4,20 @@ import { FaPlus, FaLock } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 import { useDisclosure } from '@chakra-ui/react'
 import { clearBoard, lockBoard } from '~core/actions'
+import { Stopwatch } from '~util/hooks'
 
-type UseModel = () => {
+type UseModel = (
+  stopwatch: Stopwatch
+) => {
+  cancel: () => void
   cancelRef: RefObject<HTMLButtonElement>
-  dispatchAction: () => void
+  confirm: () => void
   Icon: IconType
   isOpen: boolean
   label: string
   onClick: () => void
-  onClose: () => void
 }
-export const useModel: UseModel = () => {
+export const useModel: UseModel = ({ resetTimer, startTimer, stopTimer }) => {
   const dispatch = useDispatch()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [locked, setLocked] = useState(true)
@@ -22,16 +25,29 @@ export const useModel: UseModel = () => {
   const label = locked ? 'Set a New Puzzle' : 'Lock and Solve'
   const cancelRef = useRef<HTMLButtonElement>(null)
 
-  const onClick = () => {
-    locked ? onOpen() : dispatch(lockBoard)
-    !locked && setLocked(!locked)
+  const cancel = () => {
+    onClose()
+    startTimer()
   }
 
-  const dispatchAction = () => {
+  const confirm = () => {
     dispatch(clearBoard)
     onClose()
     setLocked(!locked)
+    resetTimer()
+    stopTimer()
   }
 
-  return { cancelRef, dispatchAction, Icon, isOpen, label, onClick, onClose }
+  const onClick = () => {
+    if (locked) {
+      onOpen()
+      stopTimer()
+    } else {
+      dispatch(lockBoard)
+      setLocked(!locked)
+      startTimer()
+    }
+  }
+
+  return { cancel, cancelRef, confirm, Icon, isOpen, label, onClick }
 }

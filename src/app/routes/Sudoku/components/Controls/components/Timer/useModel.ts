@@ -5,25 +5,26 @@ import { useSelector } from 'react-redux'
 import { intersperse, map } from 'fp-ts/Array'
 import { pipe } from 'fp-ts/function'
 import { isBoardFilled } from '~core/board/selectors'
-import { useStopwatch } from '~util/hooks'
 import { modulo, times, zeroPad } from '~util/fns'
+import { Stopwatch } from '~util/hooks'
 
-type UseModel = () => {
+type UseModel = (
+  stopwatch: Stopwatch
+) => {
   resetTimer: () => void
   toggleTimer: () => void
   timerReadout: string[]
   Icon: IconType
   iconLabel: string
 }
-export const useModel: UseModel = () => {
+export const useModel: UseModel = ({
+  elapsedTime,
+  resetTimer,
+  startTimer,
+  stopTimer,
+  isRunning
+}) => {
   const filled = useSelector(isBoardFilled)
-  const {
-    isRunning,
-    elapsedTime,
-    startTimer,
-    stopTimer,
-    resetTimer
-  } = useStopwatch()
 
   const Icon = isRunning ? FaPause : FaPlay
   const iconLabel = isRunning ? 'Pause Timer' : 'Resume Timer'

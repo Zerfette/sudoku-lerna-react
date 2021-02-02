@@ -16,10 +16,12 @@ import {
   Tooltip,
 } from '@chakra-ui/react'
 import { FaQuestion } from 'react-icons/fa'
+import { Stopwatch } from '~util/hooks'
 import { useModel } from './useModel'
 
-export const Help: FC = () => {
-  const { isOpen, onClick, onClose } = useModel()
+type Props = { stopwatch: Stopwatch }
+export const Help: FC<Props> = ({ stopwatch }) => {
+  const { isOpen, onClick, onClose } = useModel(stopwatch)
 
   return (
     <>
@@ -36,7 +38,7 @@ export const Help: FC = () => {
       <Modal
         onClose={onClose}
         isOpen={isOpen}
-        size='lg'
+        size='xl'
         scrollBehavior='inside'
         isCentered
       >

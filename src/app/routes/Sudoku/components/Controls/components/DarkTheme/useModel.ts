@@ -10,7 +10,6 @@ type UseModel = () => {
 export const useModel: UseModel = () => {
   const isDarkTheme = useColorModeValue(false, true)
   const { toggleColorMode } = useColorMode()
-
   const label = isDarkTheme ? 'Use Light Theme' : 'Use Dark Theme'
   const Icon = isDarkTheme ? FaSun : FaMoon
 

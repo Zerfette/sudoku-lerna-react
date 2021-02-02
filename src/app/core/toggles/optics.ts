@@ -12,7 +12,3 @@ export const autoSolveLens: Lens<Toggles, boolean> = Lens.fromProp<Toggles>()(
 export const mouseDownLens: Lens<Toggles, boolean> = Lens.fromProp<Toggles>()(
   'mouseDown'
 )
-
-export const timerIsRunningLens: Lens<Toggles, boolean> = Lens.fromProp<Toggles>()(
-  'timerIsRunning'
-)
