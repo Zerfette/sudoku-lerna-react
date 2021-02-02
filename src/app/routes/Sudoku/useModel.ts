@@ -1,5 +1,7 @@
 import { KeyboardEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { elem, range } from 'fp-ts/Array'
+import { eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
 import {
   clearSelection,
@@ -14,7 +16,7 @@ import { getSelectedLength } from '~core/board/selectors'
 import { mouseDownLens } from '~core/toggles/optics'
 
 type IsValue = (x: string) => boolean
-const isValue: IsValue = x => +x >= 0 && +x < 10
+const isValue: IsValue = x => pipe(range(0,9), elem(eqNumber)(+x))
 
 type OnKeyDown = (ev: KeyboardEvent<HTMLDivElement>) => void
 type UseModel = () => {
@@ -48,6 +50,7 @@ export const useModel: UseModel = () => {
       }
     } else {
       if (key === 'Enter') pipe(clearSelection, dispatch)
+      if (key === 'Delete' || key === 'Backspace') pipe({ value: 0 }, updateBig, dispatch)
       if (ctrlKey && key === 'a') pipe(selectAll, dispatch)
     }
   }
