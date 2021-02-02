@@ -1,19 +1,27 @@
 import { elem, filter, map } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
-import { pipe } from 'fp-ts/function'
-import { and, anyPass, not, propEq } from './fp'
-import { rowLens, colLens, regLens, valueLens } from '~core/board/optics'
+import { flow, pipe } from 'fp-ts/function'
+import { allPass, and, anyPass, equals, not, propEq } from './fp'
+import { indLens, rowLens, colLens, regLens, valueLens } from '~core/board/optics'
 import { Board, Cell } from '~core/types'
 
 type NoConflicts = (board: Board, cell: Cell, possibleValue: number) => boolean
-const noConflicts: NoConflicts = (board, { row, col, reg }, possibleValue) =>
+export const noConflicts: NoConflicts = (
+  board,
+  { ind, row, col, reg },
+  possibleValue
+) =>
   pipe(
     board,
     filter(
-      anyPass([
-        propEq(rowLens, row),
-        propEq(colLens, col),
-        propEq(regLens, reg)
+      allPass([
+        anyPass([
+          propEq(rowLens, row),
+          propEq(colLens, col),
+          propEq(regLens, reg)
+        ]),
+        flow(indLens.get, equals(ind), not),
+        flow(valueLens.get, equals(0), not)
       ])
     ),
     map(valueLens.get),

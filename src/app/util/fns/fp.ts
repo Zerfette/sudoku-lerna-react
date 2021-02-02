@@ -1,5 +1,5 @@
 import { fold } from 'fp-ts/boolean'
-import { some } from 'fp-ts/Array'
+import { every, some } from 'fp-ts/Array'
 import { eqStrict } from 'fp-ts/Eq'
 import { constant, Endomorphism, pipe, Predicate } from 'fp-ts/function'
 import { Magma } from 'fp-ts/Magma'
@@ -49,6 +49,13 @@ type PropSatisfies = <T, U>(
 ) => Predicate<T>
 export const propSatisfies: PropSatisfies = (lens, predicate) => data =>
   pipe(data, lens.get, predicate)
+
+type AllPass = <T>(fns: Predicate<T>[]) => Predicate<T>
+export const allPass: AllPass = fns => data =>
+  pipe(
+    fns,
+    every(fn => fn(data))
+  )
 
 type AnyPass = <T>(fns: Predicate<T>[]) => Predicate<T>
 export const anyPass: AnyPass = fns => data =>
