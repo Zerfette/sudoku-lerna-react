@@ -1,4 +1,4 @@
-import { every, filter, head, isEmpty, map, range, uniq } from 'fp-ts/Array'
+import { elem, every, filter, head, isEmpty, map, range, uniq } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
 import { constant, flow, not, pipe } from 'fp-ts/function'
 import { getOrElse } from 'fp-ts/Option'
@@ -15,7 +15,6 @@ import {
 import { Board, Cell, State } from '~core/types'
 import {
   equals,
-  includes,
   isValidPlacement,
   length,
   not as booleanNot,
@@ -66,7 +65,7 @@ export const getAvailables = createSelector([getBoard], board => {
       map(valueLens.get)
     )
   const conflicts = (lens: Lens<Cell, number>) => (x: number) =>
-    pipe(section(lens), includes(x), booleanNot)
+    pipe(section(lens), elem(eqNumber)(x), booleanNot)
   const calcAvailables = (lens: Lens<Cell, number>) =>
     shouldCalcAvailables(lens) ? pipe(range(1, 9), filter(conflicts(lens))) : []
 

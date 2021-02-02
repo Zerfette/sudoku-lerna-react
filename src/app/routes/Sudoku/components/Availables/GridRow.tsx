@@ -1,7 +1,8 @@
 import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { Flex, Tag, Text, useColorModeValue } from '@chakra-ui/react'
-import { map, range } from 'fp-ts/Array'
+import { elem, map, range } from 'fp-ts/Array'
+import { eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
 import { getMouseDown } from '~core/toggles/selectors'
 
@@ -10,7 +11,7 @@ export const GridRow: FC<Props> = ({ label, values }) => {
   const mouseDown = useSelector(getMouseDown)
   const dflt = useColorModeValue('whiteAlpha', 'blackAlpha')
   const colorScheme = (x: number): string =>
-    !mouseDown && values.includes(x) ? 'purple' : dflt
+    !mouseDown && elem(eqNumber)(x)(values) ? 'purple' : dflt
   const toTag: FC<number> = x => (
     <Tag m={1} colorScheme={colorScheme(x)} key={x}>
       {x}
