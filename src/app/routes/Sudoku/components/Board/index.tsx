@@ -21,6 +21,7 @@ export const Board: FC = () => {
       spacing={3}
       width='fit-content'
       height='fit-content'
+      mb={1}
     >
       {pipe(range(0, 8), map(getRegion), mapWithIndex(toRegion))}
     </SimpleGrid>

@@ -7,7 +7,7 @@ export const Big: FC<{ cell: Cell }> = ({ cell }) => {
   const { color } = useStyle(cell)
 
   return (
-    <Text align='center' fontSize='4xl' color={color}>
+    <Text align='center' fontSize='4xl' color={color} height='100%'>
       {cell.value}
     </Text>
   )

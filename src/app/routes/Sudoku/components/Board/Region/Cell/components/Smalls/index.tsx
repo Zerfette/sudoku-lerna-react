@@ -10,20 +10,24 @@ export const Smalls: FC<{ cell: Cell }> = ({ cell }) => {
 
   return (
     <Flex direction='column' height='100%'>
-      <Text
-        align='right'
-        fontSize='s'
-        lineHeight={1}
-        isTruncated
-        color={cornerColor}
-      >
-        {cornerNumbers}
-      </Text>
-      <Center grow='1'>
-        <Text fontSize='s' isTruncated color={middleColor}>
-          {middleNumbers}
+      {!!cornerNumbers.length && (
+        <Text
+          align='right'
+          lineHeight={1}
+          isTruncated
+          color={cornerColor}
+          mx={1}
+        >
+          {cornerNumbers}
         </Text>
-      </Center>
+      )}
+      {!!middleNumbers.length && (
+        <Center mx={1} height={!!cornerNumbers.length ? 'fit-content' : '100%'}>
+          <Text isTruncated color={middleColor}>
+            {middleNumbers}
+          </Text>
+        </Center>
+      )}
     </Flex>
   )
 }

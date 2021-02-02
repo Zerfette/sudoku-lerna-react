@@ -68,7 +68,7 @@ export const getAvailables = createSelector([getBoard], board => {
   const conflicts = (lens: Lens<Cell, number>) => (x: number) =>
     pipe(section(lens), includes(x), booleanNot)
   const calcAvailables = (lens: Lens<Cell, number>) =>
-    shouldCalcAvailables(lens) ? [] : pipe(range(1, 9), filter(conflicts(lens)))
+    shouldCalcAvailables(lens) ? pipe(range(1, 9), filter(conflicts(lens))) : []
 
   return isEmpty(selection)
     ? { row: [], col: [], reg: [], cell: [] }

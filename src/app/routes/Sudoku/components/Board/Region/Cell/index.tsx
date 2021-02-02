@@ -17,6 +17,7 @@ export const CellFC: FC<{ cell: Cell }> = ({ cell }) => {
       userSelect='none'
       onMouseDown={onMouseDown}
       onMouseEnter={onMouseEnter}
+      borderRadius='sm'
     >
       {cell.value ? <Big cell={cell} /> : <Smalls cell={cell} />}
     </Box>
