@@ -1,6 +1,7 @@
 import {
   difference,
   elem,
+  empty,
   lookup,
   getMonoid,
   map,
@@ -126,8 +127,8 @@ export const resetBoard: Mutation<Board, {}> = pipe(
         selectedLens.set(false),
         highlightedLens.set(false),
         valueLens.set(0),
-        cornerLens.set([]),
-        middleLens.set([])
+        cornerLens.set(empty),
+        middleLens.set(empty)
       )
     )
   )
@@ -178,7 +179,7 @@ export const updateSmall: Mutation<
     map(
       when(
         propEq(selectedLens, true),
-        ifElse(constant(eqNumber.equals(value, 0)), lens.set([]), cell =>
+        ifElse(constant(eqNumber.equals(value, 0)), lens.set(empty), cell =>
           pipe(
             cell,
             lens.get,

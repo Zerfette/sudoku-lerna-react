@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { isSome, toUndefined } from 'fp-ts/Option'
 import { Center, Flex, Text } from '@chakra-ui/react'
 import { Cell } from '~core/types'
 import { useModel } from './useModel'
@@ -10,7 +11,7 @@ export const Smalls: FC<{ cell: Cell }> = ({ cell }) => {
 
   return (
     <Flex direction='column' height='100%'>
-      {!!cornerNumbers.length && (
+      {isSome(cornerNumbers) && (
         <Text
           align='right'
           lineHeight={1}
@@ -18,13 +19,13 @@ export const Smalls: FC<{ cell: Cell }> = ({ cell }) => {
           color={cornerColor}
           mx={1}
         >
-          {cornerNumbers}
+          {toUndefined(cornerNumbers)}
         </Text>
       )}
-      {!!middleNumbers.length && (
-        <Center mx={1} height={!!cornerNumbers.length ? 'fit-content' : '100%'}>
+      {isSome(middleNumbers) && (
+        <Center mx={1} height={isSome(cornerNumbers) ? 'fit-content' : '100%'}>
           <Text isTruncated color={middleColor}>
-            {middleNumbers}
+            {toUndefined(middleNumbers)}
           </Text>
         </Center>
       )}

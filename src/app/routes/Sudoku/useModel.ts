@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { elem, range } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
+import { isSome } from 'fp-ts/Option'
 import {
   clearSelection,
   numberSelect,
@@ -12,7 +13,7 @@ import {
   updateSmall
 } from '~core/actions'
 import { cornerLens, middleLens } from '~core/board/optics'
-import { getSelectedLength } from '~core/board/selectors'
+import { getSelected } from '~core/board/selectors'
 import { mouseDownLens } from '~core/toggles/optics'
 
 type IsValue = (x: string) => boolean
@@ -27,7 +28,7 @@ type UseModel = () => {
 
 export const useModel: UseModel = () => {
   const dispatch = useDispatch()
-  const selectedHasLength = !!useSelector(getSelectedLength)
+  const selection = useSelector(getSelected)
 
   const onMouseDown = () =>
     pipe({ lens: mouseDownLens, value: true }, setToggle, dispatch)
@@ -41,7 +42,7 @@ export const useModel: UseModel = () => {
     if (key !== 'F12') ev.preventDefault()
     if (isValue(key)) {
       const value = +key
-      if (selectedHasLength) {
+      if (isSome(selection)) {
         if (!altKey && !ctrlKey) pipe({ value }, updateBig, dispatch)
         if (ctrlKey) pipe({ lens: cornerLens, value }, updateSmall, dispatch)
         if (altKey) pipe({ lens: middleLens, value }, updateSmall, dispatch)

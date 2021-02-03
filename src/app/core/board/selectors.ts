@@ -1,7 +1,16 @@
-import { elem, every, filter, head, isEmpty, map, range, uniq } from 'fp-ts/Array'
+import {
+  elem,
+  empty,
+  every,
+  filter,
+  isEmpty,
+  map,
+  range,
+  uniq
+} from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
-import { constant, flow, not, pipe } from 'fp-ts/function'
-import { getOrElse } from 'fp-ts/Option'
+import { flow, not, pipe } from 'fp-ts/function'
+import { fold, none, Option, some } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
 import { createSelector } from 'reselect'
 import {
@@ -21,60 +30,57 @@ import {
   propEq
 } from '~util/fns'
 
-const emptyCell = {
-  ind: 0,
-  value: 0,
-  row: 0,
-  col: 0,
-  reg: 0,
-  selected: false,
-  locked: false,
-  highlighted: false,
-  corner: [0],
-  middle: [0]
-}
-
 /******************* getters *******************/
 type GetBoard = (state: State) => Board
 export const getBoard: GetBoard = boardLens.get
 
-/******************* computed *******************/
-export const getSelected = createSelector(
-  [getBoard],
-  flow(filter(propEq(selectedLens, true)))
-)
+/******************* helpers *******************/
+type GetSelectedOption = (board: Board) => Option<Cell[]>
+const getSelectedOption: GetSelectedOption = board =>
+  pipe(board, filter(propEq(selectedLens, true)), isEmpty)
+    ? none
+    : pipe(board, filter(propEq(selectedLens, true)), some)
 
-export const getSelectedLength = createSelector([getSelected], length)
+/******************* computed *******************/
+export const getSelected = createSelector([getBoard], getSelectedOption)
 
 export const isBoardFilled = createSelector(
   [getBoard],
   flow(map(valueLens.get), every(not(equals(0))))
 )
 
-export const getAvailables = createSelector([getBoard], board => {
-  const selection = pipe(board, filter(propEq(selectedLens, true)))
-  const singleSelected = pipe(selection, length, equals(1))
-  const selectionHead = pipe(selection, head, getOrElse(constant(emptyCell)))
-  const isValid = (x: number) => isValidPlacement(board)(x)(selectionHead)
-  const shouldCalcAvailables = (lens: Lens<Cell, number>) =>
-    pipe(selection, map(lens.get), uniq(eqNumber), length, equals(1))
-  const section = (lens: Lens<Cell, number>) =>
-    pipe(
-      board,
-      filter(propEq(lens, lens.get(selectionHead))),
-      map(valueLens.get)
-    )
-  const conflicts = (lens: Lens<Cell, number>) => (x: number) =>
-    pipe(section(lens), elem(eqNumber)(x), booleanNot)
-  const calcAvailables = (lens: Lens<Cell, number>) =>
-    shouldCalcAvailables(lens) ? pipe(range(1, 9), filter(conflicts(lens))) : []
+export const getAvailables = createSelector([getBoard], board =>
+  pipe(
+    board,
+    getSelectedOption,
+    fold(
+      () => ({ row: empty, col: empty, reg: empty, cell: empty }),
+      selection => {
+        const singleSelected = pipe(selection, length, equals(1))
+        const [head] = selection
+        const isValid = (x: number) => isValidPlacement(board)(x)(head)
 
-  return isEmpty(selection)
-    ? { row: [], col: [], reg: [], cell: [] }
-    : {
-        cell: singleSelected ? pipe(range(1, 9), filter(isValid)) : [],
-        row: calcAvailables(rowLens),
-        col: calcAvailables(colLens),
-        reg: calcAvailables(regLens)
+        const shouldCalcAvailables = (lens: Lens<Cell, number>) =>
+          pipe(selection, map(lens.get), uniq(eqNumber), length, equals(1))
+
+        const section = (lens: Lens<Cell, number>) =>
+          pipe(board, filter(propEq(lens, lens.get(head))), map(valueLens.get))
+
+        const conflicts = (lens: Lens<Cell, number>) => (x: number) =>
+          pipe(section(lens), elem(eqNumber)(x), booleanNot)
+
+        const calcAvailables = (lens: Lens<Cell, number>) =>
+          shouldCalcAvailables(lens)
+            ? pipe(range(1, 9), filter(conflicts(lens)))
+            : empty
+
+        return {
+          cell: singleSelected ? pipe(range(1, 9), filter(isValid)) : empty,
+          row: calcAvailables(rowLens),
+          col: calcAvailables(colLens),
+          reg: calcAvailables(regLens)
+        }
       }
-})
+    )
+  )
+)

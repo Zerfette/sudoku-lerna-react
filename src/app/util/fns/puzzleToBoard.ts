@@ -1,4 +1,4 @@
-import { mapWithIndex, flatten } from 'fp-ts/Array'
+import { empty, mapWithIndex, flatten } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
 import { identity, pipe } from 'fp-ts/function'
 import { fold, monoidSum } from 'fp-ts/Monoid'
@@ -24,8 +24,8 @@ const toCell: ToCell = rowIndex => (colIndex, value) => ({
   selected: false,
   highlighted: false,
   locked: !eqNumber.equals(value, 0),
-  corner: [],
-  middle: []
+  corner: empty,
+  middle: empty
 })
 
 type ToCells = (rowIndex: number, row: number[]) => Cell[]
