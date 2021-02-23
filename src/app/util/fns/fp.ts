@@ -66,7 +66,7 @@ export const anyPass: AnyPass = fns => data =>
 
 type When = <T>(predicate: Predicate<T>, fn: Endomorphism<T>) => Endomorphism<T>
 export const when: When = (predicate, fn) => data =>
-  pipe(predicate(data), fold(constant(data), constant(fn(data))))
+  predicate(data) ? fn(data) : data
 
 type IfElse = <T>(
   predicate: Predicate<T>,
@@ -74,4 +74,4 @@ type IfElse = <T>(
   onFalse: Endomorphism<T>
 ) => Endomorphism<T>
 export const ifElse: IfElse = (predicate, onTrue, onFalse) => data =>
-  pipe(predicate(data), fold(constant(onFalse(data)), constant(onTrue(data))))
+  predicate(data) ? onTrue(data) : onFalse(data)

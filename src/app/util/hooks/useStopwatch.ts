@@ -36,13 +36,13 @@ const useTimer = () => {
 }
 
 export type Stopwatch = {
-    elapsedTime: number;
-    laps: Option<number[]>;
-    addLap: () => void;
-    resetTimer: () => void;
-    startTimer: () => void;
-    stopTimer: () => void;
-    isRunning: boolean;
+  elapsedTime: number
+  laps: Option<number[]>
+  addLap: () => void
+  resetTimer: () => void
+  startTimer: () => void
+  stopTimer: () => void
+  isRunning: boolean
 }
 
 const useStopwatch: () => Stopwatch = () => {
@@ -68,10 +68,7 @@ const useStopwatch: () => Stopwatch = () => {
     elapsedTime: +elapsedTime.toFixed(1),
     laps,
     addLap: () => handleAddLap(),
-    resetTimer: () => {
-      handleReset()
-      setIsRunning(true)
-    },
+    resetTimer: () => handleReset(),
     startTimer: () => setIsRunning(true),
     stopTimer: () => setIsRunning(false),
     isRunning

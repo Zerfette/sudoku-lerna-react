@@ -15,27 +15,34 @@ type UseModel = (
   onChange: () => void
   open: () => void
 }
-export const useModel: UseModel = ({ resetTimer, startTimer, stopTimer }) => {
+export const useModel: UseModel = ({ isRunning, resetTimer, startTimer, stopTimer }) => {
   const dispatch = useDispatch()
   const [isChecked, setIsChecked] = useState(false)
+  const [startOnClose, setStartOnClose] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null)
 
   const cancel = () => {
     onClose()
-    startTimer()
+    startOnClose && startTimer()
     setIsChecked(false)
+    setStartOnClose(false)
   }
 
   const confirm = () => {
     dispatch(resetBoard)
     isChecked && resetTimer()
-    cancel()
+    startTimer()
+    setIsChecked(false)
+    setStartOnClose(false)
+    onClose()
+
   }
 
   const open = () => {
+    setStartOnClose(isRunning)
     onOpen()
-    stopTimer()
+    isRunning && stopTimer()
   }
 
   const onChange = () => setIsChecked(prev => !prev)

@@ -35,7 +35,6 @@ export const useModel: UseModel = ({ resetTimer, startTimer, stopTimer }) => {
     onClose()
     setLocked(!locked)
     resetTimer()
-    stopTimer()
   }
 
   const onClick = () => {

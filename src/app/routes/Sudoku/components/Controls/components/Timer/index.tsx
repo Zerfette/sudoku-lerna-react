@@ -6,15 +6,13 @@ import { useModel } from './useModel'
 
 type Props = { stopwatch: Stopwatch }
 export const Timer: FC<Props> = ({ stopwatch }) => {
-  const { resetTimer, toggleTimer, timerReadout, Icon, iconLabel } = useModel(
+  const { resetTimer, toggleTimer, text, Icon, iconLabel } = useModel(
     stopwatch
   )
 
   return (
     <Center>
-      <Text fontSize='4xl'>
-        {timerReadout}
-      </Text>
+      <Text fontSize='4xl'>{text}</Text>
 
       <Tooltip label={iconLabel}>
         <IconButton

@@ -1,7 +1,6 @@
 import {
   elem,
   empty,
-  every,
   filter,
   isEmpty,
   map,
@@ -9,7 +8,7 @@ import {
   uniq
 } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
-import { flow, not, pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/function'
 import { fold, none, Option, some } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
 import { createSelector } from 'reselect'
@@ -43,11 +42,6 @@ const getSelectedOption: GetSelectedOption = board =>
 
 /******************* computed *******************/
 export const getSelected = createSelector([getBoard], getSelectedOption)
-
-export const isBoardFilled = createSelector(
-  [getBoard],
-  flow(map(valueLens.get), every(not(equals(0))))
-)
 
 export const getAvailables = createSelector([getBoard], board =>
   pipe(

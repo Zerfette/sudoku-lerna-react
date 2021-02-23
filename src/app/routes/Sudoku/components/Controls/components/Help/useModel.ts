@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useDisclosure } from '@chakra-ui/react'
 import { Stopwatch } from '~util/hooks'
 
@@ -8,12 +9,14 @@ type UseModel = (
   onClick: () => void
   onClose: () => void
 }
-export const useModel: UseModel = ({ startTimer, stopTimer }) => {
+export const useModel: UseModel = ({ isRunning, startTimer, stopTimer }) => {
+  const [startOnClose, setStartOnClose] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const onClick = () => {
+    setStartOnClose(isRunning)
     onOpen()
-    stopTimer()
+    isRunning && stopTimer()
   }
 
   return {
@@ -21,7 +24,8 @@ export const useModel: UseModel = ({ startTimer, stopTimer }) => {
     onClick,
     onClose: () => {
       onClose()
-      startTimer()
+      startOnClose && startTimer()
+      setStartOnClose(false)
     }
   }
 }
