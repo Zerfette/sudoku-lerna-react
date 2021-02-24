@@ -26,7 +26,7 @@ export const StartOver: FC<Props> = ({ stopwatch }) => {
     isChecked,
     isOpen,
     onChange,
-    open
+    onOpen
   } = useModel(stopwatch)
 
   return (
@@ -34,7 +34,7 @@ export const StartOver: FC<Props> = ({ stopwatch }) => {
       <Tooltip label='Start Over'>
         <IconButton
           fontSize='lg'
-          onClick={open}
+          onClick={onOpen}
           icon={<FaSync />}
           aria-label='Start Over'
         />

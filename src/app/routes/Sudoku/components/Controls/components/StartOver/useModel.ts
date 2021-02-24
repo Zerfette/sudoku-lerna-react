@@ -1,5 +1,6 @@
 import { RefObject, useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
+import { IO } from 'fp-ts/IO'
 import { useDisclosure } from '@chakra-ui/react'
 import { resetBoard } from '~core/actions'
 import { Stopwatch } from '~util/hooks'
@@ -7,53 +8,49 @@ import { Stopwatch } from '~util/hooks'
 type UseModel = (
   stopwatch: Stopwatch
 ) => {
-  cancel: () => void
+  cancel: IO<void>
   cancelRef: RefObject<HTMLButtonElement>
-  confirm: () => void
+  confirm: IO<void>
   isChecked: boolean
   isOpen: boolean
-  onChange: () => void
-  open: () => void
+  onChange: IO<void>
+  onOpen: IO<void>
 }
-export const useModel: UseModel = ({ isRunning, resetTimer, startTimer, stopTimer }) => {
+export const useModel: UseModel = ({
+  isRunning,
+  resetTimer,
+  startTimer,
+  stopTimer
+}) => {
   const dispatch = useDispatch()
   const [isChecked, setIsChecked] = useState(false)
   const [startOnClose, setStartOnClose] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null)
 
-  const cancel = () => {
-    onClose()
-    startOnClose && startTimer()
-    setIsChecked(false)
-    setStartOnClose(false)
-  }
-
-  const confirm = () => {
-    dispatch(resetBoard)
-    isChecked && resetTimer()
-    startTimer()
-    setIsChecked(false)
-    setStartOnClose(false)
-    onClose()
-
-  }
-
-  const open = () => {
-    setStartOnClose(isRunning)
-    onOpen()
-    isRunning && stopTimer()
-  }
-
-  const onChange = () => setIsChecked(prev => !prev)
-
   return {
-    cancel,
+    cancel: () => {
+      onClose()
+      startOnClose && startTimer()
+      setIsChecked(false)
+      setStartOnClose(false)
+    },
     cancelRef,
-    confirm,
+    confirm: () => {
+      dispatch(resetBoard)
+      isChecked && resetTimer()
+      startTimer()
+      setIsChecked(false)
+      setStartOnClose(false)
+      onClose()
+    },
     isChecked,
     isOpen,
-    onChange,
-    open
+    onChange: () => setIsChecked(prev => !prev),
+    onOpen: () => {
+      setStartOnClose(isRunning)
+      onOpen()
+      isRunning && stopTimer()
+    }
   }
 }

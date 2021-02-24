@@ -1,5 +1,6 @@
 import { RefObject, useRef, useEffect } from 'react'
 import { pipe } from 'fp-ts/function'
+import { IO } from 'fp-ts/IO'
 import { fold } from 'fp-ts/Option'
 import { Optional } from 'monocle-ts'
 
@@ -7,7 +8,7 @@ const currentOptional = Optional.fromNullableProp<RefObject<HTMLDivElement>>()(
   'current'
 )
 
-type UseClickAwayListener = (callback: () => void) => RefObject<HTMLDivElement>
+type UseClickAwayListener = (callback: IO<void>) => RefObject<HTMLDivElement>
 export const useClickAwayListener: UseClickAwayListener = callback => {
   const ref = useRef<HTMLDivElement>(null)
 

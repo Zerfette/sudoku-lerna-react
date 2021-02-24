@@ -1,17 +1,21 @@
 import { IconType } from 'react-icons'
 import { FaMoon, FaSun } from 'react-icons/fa'
+import { IO } from 'fp-ts/IO'
 import { useColorMode, useColorModeValue } from '@chakra-ui/react'
 
-type UseModel = () => {
+type UseModel = IO<{
   Icon: IconType
   label: string
-  toggleColorMode: () => void
-}
+  toggleColorMode: IO<void>
+}>
+
 export const useModel: UseModel = () => {
   const isDarkTheme = useColorModeValue(false, true)
   const { toggleColorMode } = useColorMode()
-  const label = isDarkTheme ? 'Use Light Theme' : 'Use Dark Theme'
-  const Icon = isDarkTheme ? FaSun : FaMoon
 
-  return { Icon, label, toggleColorMode }
+  return {
+    Icon: isDarkTheme ? FaSun : FaMoon,
+    label: isDarkTheme ? 'Use Light Theme' : 'Use Dark Theme',
+    toggleColorMode
+  }
 }

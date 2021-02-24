@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getMonoid as getArrayMonoid } from 'fp-ts/Array'
 import { constant, pipe } from 'fp-ts/function'
+import { IO } from 'fp-ts/IO'
 import { fold as monoidFold, monoidSum } from 'fp-ts/Monoid'
 import {
   fold,
@@ -38,14 +39,14 @@ const useTimer = () => {
 export type Stopwatch = {
   elapsedTime: number
   laps: Option<number[]>
-  addLap: () => void
-  resetTimer: () => void
-  startTimer: () => void
-  stopTimer: () => void
+  addLap: IO<void>
+  resetTimer: IO<void>
+  startTimer: IO<void>
+  stopTimer: IO<void>
   isRunning: boolean
 }
 
-const useStopwatch: () => Stopwatch = () => {
+const useStopwatch: IO<Stopwatch> = () => {
   const [laps, setLaps] = useState<Option<number[]>>(none)
   const { isRunning, setIsRunning, elapsedTime, setElapsedTime } = useTimer()
 
