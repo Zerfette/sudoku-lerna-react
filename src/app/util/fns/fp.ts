@@ -1,24 +1,22 @@
-import { fold } from 'fp-ts/boolean'
 import { every, some } from 'fp-ts/Array'
-import { eqStrict } from 'fp-ts/Eq'
-import { constant, Endomorphism, pipe, Predicate } from 'fp-ts/function'
+import { Eq, eqNumber } from 'fp-ts/Eq'
+import {
+  constFalse,
+  Endomorphism,
+  flow,
+  identity,
+  pipe,
+  Predicate,
+} from 'fp-ts/function'
 import { Magma } from 'fp-ts/Magma'
 import { monoidProduct, monoidString } from 'fp-ts/Monoid'
+import { fold } from 'fp-ts/Option'
 import { gt, ordNumber } from 'fp-ts/Ord'
-import { Lens } from 'monocle-ts'
+import { Lens, Optional } from 'monocle-ts'
 
 const magmaModulo: Magma<number> = {
   concat: (x, y) => x % y
 }
-
-type And = (x: boolean) => (y: boolean) => boolean
-export const and: And = x => y => x && y
-
-type Not = Predicate<boolean>
-export const not: Not = x => !x
-
-type Equals = (x: unknown) => (y: unknown) => boolean
-export const equals: Equals = x => y => eqStrict.equals(x, y)
 
 type Modulo = (x: number) => (y: number) => number
 export const modulo: Modulo = x => y => magmaModulo.concat(y, x)
@@ -28,28 +26,9 @@ export const times: Times = x => y => monoidProduct.concat(x, y)
 
 type ZeroPad = (x: number) => string
 export const zeroPad: ZeroPad = x =>
-  pipe(
-    gt(ordNumber)(x, 9),
-    fold(
-      constant(monoidString.concat('0', x.toString())),
-      constant(x.toString())
-    )
-  )
+  gt(ordNumber)(x, 9) ? x.toString() : monoidString.concat('0', x.toString())
 
-type Length = <T>(arr: T[]) => number
-export const length: Length = arr => arr.length
-
-type PropEq = <T, U>(lens: Lens<T, U>, value: U) => Predicate<T>
-export const propEq: PropEq = (lens, value) => data =>
-  pipe(data, lens.get, equals(value))
-
-type PropSatisfies = <T, U>(
-  lens: Lens<T, U>,
-  predicate: Predicate<U>
-) => Predicate<T>
-export const propSatisfies: PropSatisfies = (lens, predicate) => data =>
-  pipe(data, lens.get, predicate)
-
+// Determines if ALL given predicates are satisfied
 type AllPass = <T>(fns: Predicate<T>[]) => Predicate<T>
 export const allPass: AllPass = fns => data =>
   pipe(
@@ -57,6 +36,7 @@ export const allPass: AllPass = fns => data =>
     every(fn => fn(data))
   )
 
+// Determines if ANY given predicates are satisfied
 type AnyPass = <T>(fns: Predicate<T>[]) => Predicate<T>
 export const anyPass: AnyPass = fns => data =>
   pipe(
@@ -64,10 +44,11 @@ export const anyPass: AnyPass = fns => data =>
     some(fn => fn(data))
   )
 
-type When = <T>(predicate: Predicate<T>, fn: Endomorphism<T>) => Endomorphism<T>
-export const when: When = (predicate, fn) => data =>
-  predicate(data) ? fn(data) : data
+// Curried equals for any type
+type Equals = <T>(eq: Eq<T>) => (x: T) => Predicate<T>
+export const equals: Equals = eq => x => y => eq.equals(x, y)
 
+// Applies the onTrue function if the given predicate is satified. Otherwise applies the onFalse.
 type IfElse = <T>(
   predicate: Predicate<T>,
   onTrue: Endomorphism<T>,
@@ -75,3 +56,40 @@ type IfElse = <T>(
 ) => Endomorphism<T>
 export const ifElse: IfElse = (predicate, onTrue, onFalse) => data =>
   predicate(data) ? onTrue(data) : onFalse(data)
+
+// Determines if the length of an array is equal to the given value
+type LengthIs = (x: number) => <T>(arr: T[]) => boolean
+export const lengthIs: LengthIs = x => arr => eqNumber.equals(arr.length, x)
+
+// Determines if a lens' value satisfies a given predicate
+type LensSatisfies = <T, U>(
+  lens: Lens<T, U>,
+  predicate: Predicate<U>
+) => Predicate<T>
+export const lensSatisfies: LensSatisfies = (lens, predicate) =>
+  flow(lens.get, predicate)
+
+// Determines if a lens' value is equal to a given value
+type LensEq = <T, U>(lens: Lens<T, U>, value: U) => (eq: Eq<U>) => Predicate<T>
+export const lensEq: LensEq = (lens, value) => eq =>
+  lensSatisfies(lens, equals(eq)(value))
+
+// Determines if an optional's value satisfies a given predicate
+type OptionalSatisfies = <T, U>(
+  optional: Optional<T, U>,
+  predicate: Predicate<U>
+) => Predicate<T>
+export const optionalSatisfies: OptionalSatisfies = (optional, predicate) =>
+  flow(optional.getOption, fold(constFalse, predicate))
+
+// Determines if an optional's value is equal to a given value
+type OptionalEq = <T, U>(
+  optional: Optional<T, U>,
+  value: U
+) => (eq: Eq<U>) => Predicate<T>
+export const optionalEq: OptionalEq = (optional, value) => eq =>
+  optionalSatisfies(optional, equals(eq)(value))
+
+// Applies a function when the given predicate is satisfied
+type When = <T>(predicate: Predicate<T>, fn: Endomorphism<T>) => Endomorphism<T>
+export const when: When = (predicate, fn) => ifElse(predicate, fn, identity)

@@ -10,16 +10,13 @@ import {
   sort
 } from 'fp-ts/Array'
 import { fold as boolFold } from 'fp-ts/boolean'
-import { eqNumber } from 'fp-ts/Eq'
+import { eqBoolean, eqNumber } from 'fp-ts/Eq'
 import { constant, identity, flow, not, pipe } from 'fp-ts/function'
 import { fold as optFold } from 'fp-ts/Option'
 import { ordNumber } from 'fp-ts/Ord'
 import {
   anyPass,
-  equals,
   ifElse,
-  propEq,
-  propSatisfies,
   when,
   puzzleToBoard,
   isValidPlacement
@@ -37,6 +34,7 @@ import {
 } from '~core/board/optics'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
 import { Lens } from 'monocle-ts'
+import { lensEq } from '~util/fns'
 
 const { concat } = getMonoid<number>()
 
@@ -69,9 +67,9 @@ export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
           map(
             when(
               anyPass([
-                propEq(rowLens, row),
-                propEq(colLens, col),
-                propEq(regLens, reg)
+                lensEq(rowLens, row)(eqNumber),
+                lensEq(colLens, col)(eqNumber),
+                lensEq(regLens, reg)(eqNumber)
               ]),
               selectedLens.set(false)
             )
@@ -96,7 +94,7 @@ export const lockBoard: Mutation<Board, {}> = pipe(
   map(
     flow(
       selectedLens.set(false),
-      when(propSatisfies(valueLens, not(equals(0))), lockedLens.set(true))
+      when(not(lensEq(valueLens, 0)(eqNumber)), lockedLens.set(true))
     )
   )
 )
@@ -112,7 +110,7 @@ export const numberSelect: Mutation<Board, { value: number }> = (
       flow(
         highlightedLens.set(false),
         selectedLens.set(false),
-        when(propEq(valueLens, value), highlightedLens.set(true)),
+        when(lensEq(valueLens, value)(eqNumber), highlightedLens.set(true)),
         when(isValidPlacement(board)(value), selectedLens.set(true))
       )
     )
@@ -122,7 +120,7 @@ export const numberSelect: Mutation<Board, { value: number }> = (
 export const resetBoard: Mutation<Board, {}> = pipe(
   map(
     when(
-      propEq(lockedLens, false),
+      lensEq(lockedLens, false)(eqBoolean),
       flow(
         selectedLens.set(false),
         highlightedLens.set(false),
@@ -136,7 +134,7 @@ export const resetBoard: Mutation<Board, {}> = pipe(
 
 /******************* selectAll *******************/
 export const selectAll: Mutation<Board, {}> = pipe(
-  map(when(propEq(lockedLens, false), selectedLens.set(true)))
+  map(when(lensEq(lockedLens, false)(eqBoolean), selectedLens.set(true)))
 )
 
 /******************* selectCell *******************/
@@ -161,10 +159,11 @@ export const setPuzzle: Mutation<Board, { puzzle: Puzzle }> = (_, { puzzle }) =>
   puzzleToBoard(puzzle)
 
 /******************* updateBig *******************/
-export const updateBig: Mutation<Board, { value: number }> = (
-  board,
-  { value }
-) => pipe(board, map(when(propEq(selectedLens, true), valueLens.set(value))))
+export const updateBig: Mutation<Board, { value: number }> = (board, { value }) =>
+  pipe(
+    board,
+    map(when(lensEq(selectedLens, true)(eqBoolean), valueLens.set(value)))
+  )
 
 /******************* updateSmall *******************/
 export const updateSmall: Mutation<
@@ -178,7 +177,7 @@ export const updateSmall: Mutation<
     board,
     map(
       when(
-        propEq(selectedLens, true),
+        lensEq(selectedLens, true)(eqBoolean),
         ifElse(constant(eqNumber.equals(value, 0)), lens.set(empty), cell =>
           pipe(
             cell,

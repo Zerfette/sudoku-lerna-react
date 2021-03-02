@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { every, filter, isEmpty, map } from 'fp-ts/Array'
 import { fold } from 'fp-ts/boolean'
+import { eqBoolean, eqNumber } from 'fp-ts/Eq'
 import { not, pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
 import { useDisclosure } from '@chakra-ui/react'
@@ -26,7 +27,11 @@ export const useModel: UseModel = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const board = useSelector(getBoard)
-  const done = pipe(board, map(valueLens.get), every(not(equals(0))))
+  const done = pipe(
+    board,
+    map(valueLens.get),
+    every(not(equals(eqNumber)(0)))
+  )
   
   const stopwatch = useStopwatch()
   const { elapsedTime, isRunning, startTimer, stopTimer } = stopwatch
@@ -43,7 +48,7 @@ export const useModel: UseModel = () => {
       pipe(
         board,
         map(cell => noConflicts(board, cell, cell.value)),
-        filter(equals(false)),
+        filter(equals(eqBoolean)(false)),
         isEmpty,
         fold(
           () => {

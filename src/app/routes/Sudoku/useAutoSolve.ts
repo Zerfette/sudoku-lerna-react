@@ -2,7 +2,8 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { filter, head, map } from 'fp-ts/Array'
-import { constant, flow, pipe } from 'fp-ts/function'
+import { eqNumber } from 'fp-ts/Eq'
+import { constant, constFalse, flow, pipe } from 'fp-ts/function'
 import { fold, getOrElse } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
 import { autoSolve } from '~core/actions'
@@ -11,7 +12,7 @@ import { getAvailables, getSelected } from '~core/board/selectors'
 import { getAutoSolve } from '~core/toggles/selectors'
 import { getNumberSelected } from '~core/numberSelected/selectors'
 import { Cell } from '~core/types'
-import { equals, length, propEq } from '~util/fns'
+import { lengthIs, lensEq } from '~util/fns'
 
 export const useAutoSolve = (): void => {
   const dispatch = useDispatch()
@@ -28,7 +29,7 @@ export const useAutoSolve = (): void => {
   const isSingleton: IsSingleton = (lens, i) =>
     pipe(
       selection,
-      fold(constant(false), flow(filter(propEq(lens, i)), length, equals(1)))
+      fold(constFalse, flow(filter(lensEq(lens, i)(eqNumber)), lengthIs(1)))
     )
 
   type CanSolve = (cell: Cell) => boolean
@@ -49,7 +50,7 @@ export const useAutoSolve = (): void => {
   //When there is only one selected try to autoSolve
   useEffect(() => {
     if (shouldAutoSolve) {
-      const singlePossible = pipe(cell, length, equals(1))
+      const singlePossible = pipe(cell, lengthIs(1))
       if (singlePossible) {
         pipe(
           selection,

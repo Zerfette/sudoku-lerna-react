@@ -1,13 +1,5 @@
-import {
-  elem,
-  empty,
-  filter,
-  isEmpty,
-  map,
-  range,
-  uniq
-} from 'fp-ts/Array'
-import { eqNumber } from 'fp-ts/Eq'
+import { elem, empty, filter, isEmpty, map, range, uniq } from 'fp-ts/Array'
+import { eqBoolean, eqNumber } from 'fp-ts/Eq'
 import { pipe } from 'fp-ts/function'
 import { fold, none, Option, some } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
@@ -21,13 +13,7 @@ import {
   regLens
 } from './optics'
 import { Board, Cell, State } from '~core/types'
-import {
-  equals,
-  isValidPlacement,
-  length,
-  not as booleanNot,
-  propEq
-} from '~util/fns'
+import { isValidPlacement, lengthIs, lensEq } from '~util/fns'
 
 /******************* getters *******************/
 type GetBoard = (state: State) => Board
@@ -36,9 +22,9 @@ export const getBoard: GetBoard = boardLens.get
 /******************* helpers *******************/
 type GetSelectedOption = (board: Board) => Option<Cell[]>
 const getSelectedOption: GetSelectedOption = board =>
-  pipe(board, filter(propEq(selectedLens, true)), isEmpty)
+  pipe(board, filter(lensEq(selectedLens, true)(eqBoolean)), isEmpty)
     ? none
-    : pipe(board, filter(propEq(selectedLens, true)), some)
+    : pipe(board, filter(lensEq(selectedLens, true)(eqBoolean)), some)
 
 /******************* computed *******************/
 export const getSelected = createSelector([getBoard], getSelectedOption)
@@ -50,18 +36,22 @@ export const getAvailables = createSelector([getBoard], board =>
     fold(
       () => ({ row: empty, col: empty, reg: empty, cell: empty }),
       selection => {
-        const singleSelected = pipe(selection, length, equals(1))
+        const singleSelected = pipe(selection, lengthIs(1))
         const [head] = selection
         const isValid = (x: number) => isValidPlacement(board)(x)(head)
 
         const shouldCalcAvailables = (lens: Lens<Cell, number>) =>
-          pipe(selection, map(lens.get), uniq(eqNumber), length, equals(1))
+          pipe(selection, map(lens.get), uniq(eqNumber), lengthIs(1))
 
         const section = (lens: Lens<Cell, number>) =>
-          pipe(board, filter(propEq(lens, lens.get(head))), map(valueLens.get))
+          pipe(
+            board,
+            filter(lensEq(lens, lens.get(head))(eqNumber)),
+            map(valueLens.get)
+          )
 
         const conflicts = (lens: Lens<Cell, number>) => (x: number) =>
-          pipe(section(lens), elem(eqNumber)(x), booleanNot)
+          !pipe(section(lens), elem(eqNumber)(x))
 
         const calcAvailables = (lens: Lens<Cell, number>) =>
           shouldCalcAvailables(lens)

@@ -1,6 +1,6 @@
-import { empty, mapWithIndex, flatten } from 'fp-ts/Array'
+import { chainWithIndex, empty, mapWithIndex } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
-import { identity, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { fold, monoidSum } from 'fp-ts/Monoid'
 import { bimap } from 'fp-ts/Tuple'
 import { indLens } from '~core/board/optics'
@@ -36,5 +36,5 @@ type SetIndex = (i: number, cell: Cell) => Cell
 const setIndex: SetIndex = (i, cell) => indLens.set(i)(cell)
 
 type PuzzleToBoard = (puzzle: Puzzle) => Board
-export const puzzleToBoard: PuzzleToBoard = puzzle =>
-  pipe(puzzle, mapWithIndex(toCells), flatten, mapWithIndex(setIndex))
+export const puzzleToBoard: PuzzleToBoard =
+  flow(chainWithIndex(toCells), mapWithIndex(setIndex))
