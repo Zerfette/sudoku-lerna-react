@@ -3,7 +3,8 @@ import { FaPlay, FaPause } from 'react-icons/fa'
 import { intersperse, map } from 'fp-ts/Array'
 import { pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
-import { modulo, times, zeroPad } from '~util/fns'
+import { monoidProduct } from 'fp-ts/Monoid'
+import { concat, magmaModulo, zeroPad } from '~util/fns'
 import { Stopwatch } from '~util/hooks'
 
 type UseModel = (
@@ -22,9 +23,19 @@ export const useModel: UseModel = ({
   stopTimer,
   isRunning
 }) => {
-  const hours = pipe(elapsedTime, modulo(86400), times(1 / 3600), Math.floor)
-  const minutes = pipe(elapsedTime, modulo(3600), times(1 / 60), Math.floor)
-  const seconds = pipe(elapsedTime, modulo(60), Math.floor)
+  const hours = pipe(
+    elapsedTime,
+    concat(magmaModulo)(86400),
+    concat(monoidProduct)(1 / 3600),
+    Math.floor
+  )
+  const minutes = pipe(
+    elapsedTime,
+    concat(magmaModulo)(3600),
+    concat(monoidProduct)(1 / 60),
+    Math.floor
+  )
+  const seconds = pipe(elapsedTime, concat(magmaModulo)(60), Math.floor)
 
   return {
     text: pipe([hours, minutes, seconds], map(zeroPad), intersperse(':')),

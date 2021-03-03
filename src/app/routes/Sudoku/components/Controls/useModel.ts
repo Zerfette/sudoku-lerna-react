@@ -6,10 +6,11 @@ import { fold } from 'fp-ts/boolean'
 import { eqBoolean, eqNumber } from 'fp-ts/Eq'
 import { not, pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
+import { monoidProduct } from 'fp-ts/Monoid'
 import { useDisclosure } from '@chakra-ui/react'
 import { valueLens } from '~core/board/optics'
 import { getBoard } from '~core/board/selectors'
-import { equals, modulo, noConflicts, times } from '~util/fns'
+import { concat, equals, magmaModulo, noConflicts } from '~util/fns'
 import { Stopwatch, useStopwatch } from '~util/hooks'
 
 type UseModel = IO<{
@@ -27,17 +28,23 @@ export const useModel: UseModel = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const board = useSelector(getBoard)
-  const done = pipe(
-    board,
-    map(valueLens.get),
-    every(not(equals(eqNumber)(0)))
-  )
-  
+  const done = pipe(board, map(valueLens.get), every(not(equals(eqNumber)(0))))
+
   const stopwatch = useStopwatch()
   const { elapsedTime, isRunning, startTimer, stopTimer } = stopwatch
-  const hours = pipe(elapsedTime, modulo(86400), times(1 / 3600), Math.floor)
-  const minutes = pipe(elapsedTime, modulo(3600), times(1 / 60), Math.floor)
-  const seconds = pipe(elapsedTime, modulo(60), Math.floor)
+  const hours = pipe(
+    elapsedTime,
+    concat(magmaModulo)(86400),
+    concat(monoidProduct)(1 / 3600),
+    Math.floor
+  )
+  const minutes = pipe(
+    elapsedTime,
+    concat(magmaModulo)(3600),
+    concat(monoidProduct)(1 / 60),
+    Math.floor
+  )
+  const seconds = pipe(elapsedTime, concat(magmaModulo)(60), Math.floor)
 
   useEffect(() => {
     startTimer()

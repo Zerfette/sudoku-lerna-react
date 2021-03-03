@@ -1,18 +1,23 @@
 import { chainWithIndex, empty, mapWithIndex } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { fold, monoidSum } from 'fp-ts/Monoid'
+import { fold, monoidProduct, monoidSum } from 'fp-ts/Monoid'
 import { bimap } from 'fp-ts/Tuple'
 import { indLens } from '~core/board/optics'
 import { Board, Cell, Puzzle } from '~core/types'
-import { times } from '~util/fns'
+import { concat } from '~util/fns'
 
 type Op = (x: number) => number
-const op: Op = x => pipe(x, times(1 / 3), Math.floor) // Math.floor(x / 3)
+const op: Op = x => pipe(x, concat(monoidProduct)(1 / 3), Math.floor) // Math.floor(x / 3)
 
 type GetRegion = (r: number, c: number) => number
 const getRegion: GetRegion = (r, c) =>
-  pipe([r, c], bimap(op, op), bimap(identity, times(3)), fold(monoidSum)) // 3 * op(r) + op(c)
+  pipe(
+    [r, c],
+    bimap(op, op),
+    bimap(identity, concat(monoidProduct)(3)),
+    fold(monoidSum)
+  ) // 3 * op(r) + op(c)
 
 type ToCell = (rowIndex: number) => (colIndex: number, value: number) => Cell
 const toCell: ToCell = rowIndex => (colIndex, value) => ({
@@ -36,5 +41,7 @@ type SetIndex = (i: number, cell: Cell) => Cell
 const setIndex: SetIndex = (i, cell) => indLens.set(i)(cell)
 
 type PuzzleToBoard = (puzzle: Puzzle) => Board
-export const puzzleToBoard: PuzzleToBoard =
-  flow(chainWithIndex(toCells), mapWithIndex(setIndex))
+export const puzzleToBoard: PuzzleToBoard = flow(
+  chainWithIndex(toCells),
+  mapWithIndex(setIndex)
+)

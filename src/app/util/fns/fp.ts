@@ -6,27 +6,20 @@ import {
   flow,
   identity,
   pipe,
-  Predicate,
+  Predicate
 } from 'fp-ts/function'
+import { Group } from 'fp-ts/Group'
 import { Magma } from 'fp-ts/Magma'
-import { monoidProduct, monoidString } from 'fp-ts/Monoid'
+import { Monoid, monoidString } from 'fp-ts/Monoid'
 import { fold } from 'fp-ts/Option'
 import { gt, ordNumber } from 'fp-ts/Ord'
+import { Semigroup } from 'fp-ts/Semigroup'
 import { Lens, Optional } from 'monocle-ts'
 
-const magmaModulo: Magma<number> = {
-  concat: (x, y) => x % y
+// A magma for numbers under the remainder operator (modulo)
+export const magmaModulo: Magma<number> = {
+  concat: (x, y) => y % x
 }
-
-type Modulo = (x: number) => (y: number) => number
-export const modulo: Modulo = x => y => magmaModulo.concat(y, x)
-
-type Times = (x: number) => (y: number) => number
-export const times: Times = x => y => monoidProduct.concat(x, y)
-
-type ZeroPad = (x: number) => string
-export const zeroPad: ZeroPad = x =>
-  gt(ordNumber)(x, 9) ? x.toString() : monoidString.concat('0', x.toString())
 
 // Determines if ALL given predicates are satisfied
 type AllPass = <T>(fns: Predicate<T>[]) => Predicate<T>
@@ -44,7 +37,11 @@ export const anyPass: AnyPass = fns => data =>
     some(fn => fn(data))
   )
 
-// Curried equals for any type
+// Generic curried concat
+type Concat = <T>(algebraicStructure: Magma<T> | Monoid<T> | Semigroup<T> | Group<T>) => (x: T) => Endomorphism<T>
+export const concat: Concat = algebraicStructure => x => y => algebraicStructure.concat(x,y)
+
+// Generic curried equals
 type Equals = <T>(eq: Eq<T>) => (x: T) => Predicate<T>
 export const equals: Equals = eq => x => y => eq.equals(x, y)
 
@@ -93,3 +90,8 @@ export const optionalEq: OptionalEq = (optional, value) => eq =>
 // Applies a function when the given predicate is satisfied
 type When = <T>(predicate: Predicate<T>, fn: Endomorphism<T>) => Endomorphism<T>
 export const when: When = (predicate, fn) => ifElse(predicate, fn, identity)
+
+// Converts a number to a 2+ character string (Appends a 0 to numbers less than 10)
+type ZeroPad = (x: number) => string
+export const zeroPad: ZeroPad = x =>
+  gt(ordNumber)(x, 9) ? x.toString() : monoidString.concat('0', x.toString())
