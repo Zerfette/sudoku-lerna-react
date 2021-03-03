@@ -60,7 +60,7 @@ export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
       )
     ),
     optFold(
-      () => board,
+      constant(board),
       board =>
         pipe(
           board,
@@ -85,17 +85,15 @@ export const clearBoard: () => Board = constant(
 )
 
 /******************* clearSelection *******************/
-export const clearSelection: Mutation<Board, {}> = pipe(
-  map(flow(selectedLens.set(false), highlightedLens.set(false)))
+export const clearSelection: Mutation<Board, {}> = map(
+  flow(selectedLens.set(false), highlightedLens.set(false))
 )
 
 /******************* lockBoard *******************/
-export const lockBoard: Mutation<Board, {}> = pipe(
-  map(
-    flow(
-      selectedLens.set(false),
-      when(not(lensEq(valueLens, 0)(eqNumber)), lockedLens.set(true))
-    )
+export const lockBoard: Mutation<Board, {}> = map(
+  flow(
+    selectedLens.set(false),
+    when(not(lensEq(valueLens, 0)(eqNumber)), lockedLens.set(true))
   )
 )
 
@@ -117,24 +115,22 @@ export const numberSelect: Mutation<Board, { value: number }> = (
   )
 
 /******************* resetBoard *******************/
-export const resetBoard: Mutation<Board, {}> = pipe(
-  map(
-    when(
-      lensEq(lockedLens, false)(eqBoolean),
-      flow(
-        selectedLens.set(false),
-        highlightedLens.set(false),
-        valueLens.set(0),
-        cornerLens.set(empty),
-        middleLens.set(empty)
-      )
+export const resetBoard: Mutation<Board, {}> = map(
+  when(
+    lensEq(lockedLens, false)(eqBoolean),
+    flow(
+      selectedLens.set(false),
+      highlightedLens.set(false),
+      valueLens.set(0),
+      cornerLens.set(empty),
+      middleLens.set(empty)
     )
   )
 )
 
 /******************* selectAll *******************/
-export const selectAll: Mutation<Board, {}> = pipe(
-  map(when(lensEq(lockedLens, false)(eqBoolean), selectedLens.set(true)))
+export const selectAll: Mutation<Board, {}> = map(
+  when(lensEq(lockedLens, false)(eqBoolean), selectedLens.set(true))
 )
 
 /******************* selectCell *******************/
@@ -159,7 +155,10 @@ export const setPuzzle: Mutation<Board, { puzzle: Puzzle }> = (_, { puzzle }) =>
   puzzleToBoard(puzzle)
 
 /******************* updateBig *******************/
-export const updateBig: Mutation<Board, { value: number }> = (board, { value }) =>
+export const updateBig: Mutation<Board, { value: number }> = (
+  board,
+  { value }
+) =>
   pipe(
     board,
     map(when(lensEq(selectedLens, true)(eqBoolean), valueLens.set(value)))
