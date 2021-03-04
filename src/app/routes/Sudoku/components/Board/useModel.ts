@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { filter } from 'fp-ts/Array'
 import { eqNumber } from 'fp-ts/Eq'
-import { pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
 import { isSome } from 'fp-ts/Option'
 import { clearSelection } from '~core/actions'
@@ -18,9 +17,7 @@ export const useModel: UseModel = () => {
   const selection = useSelector(getSelected)
 
   return {
-    getRegion: i => pipe(board, filter(lensEq(regLens, i)(eqNumber))),
-    onClickAway: () => {
-      isSome(selection) && pipe(clearSelection, dispatch)
-    }
+    getRegion: i => filter(lensEq(regLens, i)(eqNumber))(board),
+    onClickAway: () => isSome(selection) && dispatch(clearSelection)
   }
 }

@@ -18,7 +18,7 @@ import { getSelected } from '~core/board/selectors'
 import { mouseDownLens } from '~core/toggles/optics'
 
 type IsValue = (x: string) => boolean
-const isValue: IsValue = x => pipe(range(0, 9), elem(eqNumber)(+x))
+const isValue: IsValue = x => elem(eqNumber)(+x)(range(0, 9))
 
 type UseModel = IO<{
   onMouseDown: IO<void>

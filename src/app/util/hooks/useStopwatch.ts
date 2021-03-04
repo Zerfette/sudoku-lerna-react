@@ -57,11 +57,12 @@ const useStopwatch: IO<Stopwatch> = () => {
   }
 
   const handleAddLap = () => {
-    const prevTotal = pipe(laps, fold(constant(0), monoidFold(monoidSum)))
-    const currentLap = pipe(
-      laps,
-      fold(constant(elapsedTime), constant(elapsedTime - prevTotal))
-    )
+    const prevTotal = fold(constant(0), monoidFold(monoidSum))(laps)
+    const currentLap = fold(
+      constant(elapsedTime),
+      constant(elapsedTime - prevTotal)
+    )(laps)
+
     isRunning && setLaps(arrayOptionMonoid.concat(laps, some([currentLap])))
   }
 

@@ -1,4 +1,4 @@
-export type Smalls = number[] | never[]
+export type Smalls = number[]
 
 export type Cell = {
   ind: number

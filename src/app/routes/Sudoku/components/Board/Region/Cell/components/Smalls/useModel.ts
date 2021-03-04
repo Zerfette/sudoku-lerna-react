@@ -14,13 +14,13 @@ type UseModel = (
 export const useModel: UseModel = cell => {
   const board = useSelector(getBoard)
   const isValid = (x: number) => isValidPlacement(board)(x)(cell)
-  const get = (lens: Lens<Cell, Smalls>) =>
+  const getOption = (lens: Lens<Cell, Smalls>) =>
     pipe(cell, lens.get, isEmpty)
       ? none
       : pipe(cell, lens.get, filter(isValid), some)
 
   return {
-    cornerNumbers: get(cornerLens),
-    middleNumbers: get(middleLens)
+    cornerNumbers: getOption(cornerLens),
+    middleNumbers: getOption(middleLens)
   }
 }

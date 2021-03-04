@@ -61,20 +61,16 @@ export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
     ),
     optFold(
       constant(board),
-      board =>
-        pipe(
-          board,
-          map(
-            when(
-              anyPass([
-                lensEq(rowLens, row)(eqNumber),
-                lensEq(colLens, col)(eqNumber),
-                lensEq(regLens, reg)(eqNumber)
-              ]),
-              selectedLens.set(false)
-            )
-          )
+      map(
+        when(
+          anyPass([
+            lensEq(rowLens, row)(eqNumber),
+            lensEq(colLens, col)(eqNumber),
+            lensEq(regLens, reg)(eqNumber)
+          ]),
+          selectedLens.set(false)
         )
+      )
     )
   )
 }
@@ -102,17 +98,14 @@ export const numberSelect: Mutation<Board, { value: number }> = (
   board,
   { value }
 ) =>
-  pipe(
-    board,
-    map(
-      flow(
-        highlightedLens.set(false),
-        selectedLens.set(false),
-        when(lensEq(valueLens, value)(eqNumber), highlightedLens.set(true)),
-        when(isValidPlacement(board)(value), selectedLens.set(true))
-      )
+  map(
+    flow(
+      highlightedLens.set(false),
+      selectedLens.set(false),
+      when(lensEq(valueLens, value)(eqNumber), highlightedLens.set(true)),
+      when(isValidPlacement(board)(value), selectedLens.set(true))
     )
-  )
+  )(board)
 
 /******************* resetBoard *******************/
 export const resetBoard: Mutation<Board, {}> = map(
@@ -159,10 +152,7 @@ export const updateBig: Mutation<Board, { value: number }> = (
   board,
   { value }
 ) =>
-  pipe(
-    board,
-    map(when(lensEq(selectedLens, true)(eqBoolean), valueLens.set(value)))
-  )
+  map(when(lensEq(selectedLens, true)(eqBoolean), valueLens.set(value)))(board)
 
 /******************* updateSmall *******************/
 export const updateSmall: Mutation<

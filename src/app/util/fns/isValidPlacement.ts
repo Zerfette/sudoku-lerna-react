@@ -32,4 +32,4 @@ type IsValidPlacement = (
   board: Board
 ) => (possibleValue: number) => (cell: Cell) => boolean
 export const isValidPlacement: IsValidPlacement = board => possibleValue => cell =>
-  pipe(cell, lensEq(valueLens, 0)(eqNumber)) && noConflicts(board, cell, possibleValue)
+  lensEq(valueLens, 0)(eqNumber)(cell) && noConflicts(board, cell, possibleValue)
