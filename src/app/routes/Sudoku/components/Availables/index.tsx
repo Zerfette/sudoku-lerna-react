@@ -1,4 +1,3 @@
-import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import {
   Box,
@@ -11,7 +10,7 @@ import {
 import { getAvailables } from '~core/board/selectors'
 import { GridRow } from './GridRow'
 
-export const Availables: FC = () => {
+export const Availables = () => {
   const { cell, row, col, reg } = useSelector(getAvailables)
   const bg = useColorModeValue('gray.200', 'gray.700')
   

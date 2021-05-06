@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { FaUndo } from 'react-icons/fa'
 import { Center, IconButton, Text, Tooltip } from '@chakra-ui/react'
 import { Stopwatch } from '~util/hooks'

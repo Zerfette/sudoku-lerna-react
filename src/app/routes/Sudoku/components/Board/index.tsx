@@ -1,11 +1,10 @@
-import React, { FC } from 'react'
 import { SimpleGrid } from '@chakra-ui/react'
 import { mapWithIndex } from 'fp-ts/Array'
 import { useClickAwayListener } from '~util/hooks'
 import { Region } from './Region'
 import { useModel } from './useModel'
 
-export const Board: FC = () => {
+export const Board = () => {
   const { regions, onClickAway } = useModel()
   const ref = useClickAwayListener(onClickAway)
 

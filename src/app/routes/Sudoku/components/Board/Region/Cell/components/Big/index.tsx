@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { Text } from '@chakra-ui/react'
 import { Cell } from '~core/types'
 import { useStyle } from './useStyle'

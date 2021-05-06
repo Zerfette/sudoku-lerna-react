@@ -1,4 +1,3 @@
-import React, { FC } from 'react'
 import Confetti from 'react-confetti'
 import {
   Flex,
@@ -23,7 +22,7 @@ import {
 } from './components'
 import { useModel } from './useModel'
 
-export const Controls: FC = () => {
+export const Controls = () => {
   const { body, heading, isOpen, onClose, solved, stopwatch } = useModel()
   
   return (

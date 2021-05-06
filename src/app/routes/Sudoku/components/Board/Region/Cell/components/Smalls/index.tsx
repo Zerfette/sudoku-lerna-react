@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import { FC } from 'react'
 import { isSome, toUndefined } from 'fp-ts/Option'
 import { Center, Flex, Text } from '@chakra-ui/react'
 import { Cell } from '~core/types'

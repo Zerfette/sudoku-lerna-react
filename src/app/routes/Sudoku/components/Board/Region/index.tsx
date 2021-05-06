@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { SimpleGrid } from '@chakra-ui/react'
 import { mapWithIndex } from 'fp-ts/Array'
 import { Cell } from '~core/types'

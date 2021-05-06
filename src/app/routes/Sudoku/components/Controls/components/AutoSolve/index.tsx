@@ -1,9 +1,8 @@
-import React, { FC } from 'react'
 import { FaMagic } from 'react-icons/fa'
 import { IconButton, Tooltip } from '@chakra-ui/react'
 import { useModel } from './useModel'
 
-export const AutoSolve: FC = () => {
+export const AutoSolve = () => {
   const { colorScheme, label, onClick } = useModel()
 
   return (

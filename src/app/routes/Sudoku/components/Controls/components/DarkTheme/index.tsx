@@ -1,11 +1,10 @@
-import React, { FC } from 'react'
 import {
   IconButton,
   Tooltip,
 } from '@chakra-ui/react'
 import { useModel } from './useModel'
 
-export const DarkTheme: FC = () => {
+export const DarkTheme = () => {
   const { Icon, label, toggleColorMode } = useModel()
 
   return (

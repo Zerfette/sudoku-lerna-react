@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { Box } from '@chakra-ui/react'
 import { Cell } from '~core/types'
 import { Big, Smalls } from './components'
