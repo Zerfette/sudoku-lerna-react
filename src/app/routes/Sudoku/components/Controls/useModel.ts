@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useDisclosure } from '@chakra-ui/react'
 import { every, filter, isEmpty, map } from 'fp-ts/Array'
-import { fold } from 'fp-ts/boolean'
-import { eqBoolean, eqNumber } from 'fp-ts/Eq'
+import { Eq as bEq, fold } from 'fp-ts/boolean'
 import { not, pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
-import { monoidProduct } from 'fp-ts/Monoid'
-import { useDisclosure } from '@chakra-ui/react'
+import { Eq as nEq, MonoidProduct } from 'fp-ts/number'
 import { valueLens } from '~core/board/optics'
 import { getBoard } from '~core/board/selectors'
 import { concat, equals, magmaModulo, noConflicts } from '~util/fns'
@@ -28,20 +27,20 @@ export const useModel: UseModel = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const board = useSelector(getBoard)
-  const done = pipe(board, map(valueLens.get), every(not(equals(eqNumber)(0))))
+  const done = pipe(board, map(valueLens.get), every(not(equals(nEq)(0))))
 
   const stopwatch = useStopwatch()
   const { elapsedTime, isRunning, startTimer, stopTimer } = stopwatch
   const hours = pipe(
     elapsedTime,
     concat(magmaModulo)(86400),
-    concat(monoidProduct)(1 / 3600),
+    concat(MonoidProduct)(1 / 3600),
     Math.floor
   )
   const minutes = pipe(
     elapsedTime,
     concat(magmaModulo)(3600),
-    concat(monoidProduct)(1 / 60),
+    concat(MonoidProduct)(1 / 60),
     Math.floor
   )
   const seconds = pipe(elapsedTime, concat(magmaModulo)(60), Math.floor)
@@ -55,7 +54,7 @@ export const useModel: UseModel = () => {
       pipe(
         board,
         map(cell => noConflicts(board, cell, cell.value)),
-        filter(equals(eqBoolean)(false)),
+        filter(equals(bEq)(false)),
         isEmpty,
         fold(
           () => {

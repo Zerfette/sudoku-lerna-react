@@ -1,18 +1,22 @@
-import { chainWithIndex, empty, mapWithIndex } from 'fp-ts/Array'
-import { eqNumber } from 'fp-ts/Eq'
+import { chainWithIndex, mapWithIndex } from 'fp-ts/Array'
 import { flow, pipe } from 'fp-ts/function'
-import { fold, monoidProduct, monoidSum } from 'fp-ts/Monoid'
+import { concatAll } from 'fp-ts/Monoid'
+import { Eq as nEq, MonoidProduct, MonoidSum } from 'fp-ts/number'
 import { bimap } from 'fp-ts/Tuple'
 import { indLens } from '~core/board/optics'
 import { Board, Cell, Puzzle } from '~core/types'
 import { concat } from '~util/fns'
 
 type Op = (x: number) => number
-const op: Op = x => pipe(x, concat(monoidProduct)(1 / 3), Math.floor) // Math.floor(x / 3)
+const op: Op = x => pipe(x, concat(MonoidProduct)(1 / 3), Math.floor) // Math.floor(x / 3)
 
 type GetRegion = (r: number, c: number) => number
 const getRegion: GetRegion = (r, c) =>
-  pipe([r, c], bimap(op, flow(op, concat(monoidProduct)(3))), fold(monoidSum)) // 3 * op(r) + op(c)
+  pipe(
+    [r, c],
+    bimap(op, flow(op, concat(MonoidProduct)(3))),
+    concatAll(MonoidSum)
+  ) // 3 * op(r) + op(c)
 
 type ToCell = (rowIndex: number) => (colIndex: number, value: number) => Cell
 const toCell: ToCell = rowIndex => (colIndex, value) => ({
@@ -23,9 +27,9 @@ const toCell: ToCell = rowIndex => (colIndex, value) => ({
   reg: getRegion(rowIndex, colIndex),
   selected: false,
   highlighted: false,
-  locked: !eqNumber.equals(value, 0),
-  corner: empty,
-  middle: empty
+  locked: !nEq.equals(value, 0),
+  corner: [],
+  middle: []
 })
 
 type ToCells = (rowIndex: number, row: number[]) => Cell[]

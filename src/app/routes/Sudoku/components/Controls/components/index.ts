@@ -1,8 +1,6 @@
-import { AutoSolve } from './AutoSolve'
-import { DarkTheme } from './DarkTheme'
-import { Edit } from './Edit'
-import { Help } from './Help'
-import { StartOver } from './StartOver'
-import { Timer } from './Timer'
-
-export { AutoSolve, DarkTheme, Edit, Help, StartOver, Timer }
+export * from './AutoSolve'
+export * from './DarkTheme'
+export * from './Edit'
+export * from './Help'
+export * from './StartOver'
+export * from './Timer'

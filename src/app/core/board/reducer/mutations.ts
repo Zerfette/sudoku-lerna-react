@@ -1,7 +1,6 @@
 import {
   difference,
   elem,
-  empty,
   lookup,
   getMonoid,
   map,
@@ -9,11 +8,11 @@ import {
   replicate,
   sort
 } from 'fp-ts/Array'
-import { fold as boolFold } from 'fp-ts/boolean'
-import { eqBoolean, eqNumber } from 'fp-ts/Eq'
+import { Eq as bEq, fold as bFold } from 'fp-ts/boolean'
 import { constant, identity, flow, not, pipe } from 'fp-ts/function'
+import { Eq as nEq, Ord as nOrd } from 'fp-ts/number'
 import { fold as optFold } from 'fp-ts/Option'
-import { ordNumber } from 'fp-ts/Ord'
+import { Lens } from 'monocle-ts'
 import {
   anyPass,
   ifElse,
@@ -33,10 +32,7 @@ import {
   middleLens
 } from '~core/board/optics'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
-import { Lens } from 'monocle-ts'
-import { lensEq } from '~util/fns'
-
-const { concat } = getMonoid<number>()
+import { lensEq, mapWhen } from '~util/fns'
 
 /******************* autoSolve *******************/
 export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
@@ -61,15 +57,13 @@ export const autoSolve: Mutation<Board, { ind: number; value: number }> = (
     ),
     optFold(
       constant(board),
-      map(
-        when(
-          anyPass([
-            lensEq(rowLens, row)(eqNumber),
-            lensEq(colLens, col)(eqNumber),
-            lensEq(regLens, reg)(eqNumber)
-          ]),
-          selectedLens.set(false)
-        )
+      mapWhen(
+        anyPass([
+          lensEq(rowLens, row)(nEq),
+          lensEq(colLens, col)(nEq),
+          lensEq(regLens, reg)(nEq)
+        ]),
+        selectedLens.set(false)
       )
     )
   )
@@ -89,7 +83,7 @@ export const clearSelection: Mutation<Board, {}> = map(
 export const lockBoard: Mutation<Board, {}> = map(
   flow(
     selectedLens.set(false),
-    when(not(lensEq(valueLens, 0)(eqNumber)), lockedLens.set(true))
+    when(not(lensEq(valueLens, 0)(nEq)), lockedLens.set(true))
   )
 )
 
@@ -102,28 +96,27 @@ export const numberSelect: Mutation<Board, { value: number }> = (
     flow(
       highlightedLens.set(false),
       selectedLens.set(false),
-      when(lensEq(valueLens, value)(eqNumber), highlightedLens.set(true)),
+      when(lensEq(valueLens, value)(nEq), highlightedLens.set(true)),
       when(isValidPlacement(board)(value), selectedLens.set(true))
     )
   )(board)
 
 /******************* resetBoard *******************/
-export const resetBoard: Mutation<Board, {}> = map(
-  when(
-    lensEq(lockedLens, false)(eqBoolean),
-    flow(
-      selectedLens.set(false),
-      highlightedLens.set(false),
-      valueLens.set(0),
-      cornerLens.set(empty),
-      middleLens.set(empty)
-    )
+export const resetBoard: Mutation<Board, {}> = mapWhen(
+  lensEq(lockedLens, false)(bEq),
+  flow(
+    selectedLens.set(false),
+    highlightedLens.set(false),
+    valueLens.set(0),
+    cornerLens.set([]),
+    middleLens.set([])
   )
 )
 
 /******************* selectAll *******************/
-export const selectAll: Mutation<Board, {}> = map(
-  when(lensEq(lockedLens, false)(eqBoolean), selectedLens.set(true))
+export const selectAll: Mutation<Board, {}> = mapWhen(
+  lensEq(lockedLens, false)(bEq),
+  selectedLens.set(true)
 )
 
 /******************* selectCell *******************/
@@ -151,8 +144,7 @@ export const setPuzzle: Mutation<Board, { puzzle: Puzzle }> = (_, { puzzle }) =>
 export const updateBig: Mutation<Board, { value: number }> = (
   board,
   { value }
-) =>
-  map(when(lensEq(selectedLens, true)(eqBoolean), valueLens.set(value)))(board)
+) => mapWhen(lensEq(selectedLens, true)(bEq), valueLens.set(value))(board)
 
 /******************* updateSmall *******************/
 export const updateSmall: Mutation<
@@ -164,25 +156,24 @@ export const updateSmall: Mutation<
 > = (board, { lens, value }) =>
   pipe(
     board,
-    map(
-      when(
-        lensEq(selectedLens, true)(eqBoolean),
-        ifElse(constant(eqNumber.equals(value, 0)), lens.set(empty), cell =>
-          pipe(
-            cell,
-            lens.get,
-            elem(eqNumber)(value),
-            boolFold(
-              constant(
-                lens.set(
-                  pipe(concat(lens.get(cell), [value]), sort(ordNumber))
-                )(cell)
-              ),
-              constant(
-                lens.set(pipe(lens.get(cell), difference(eqNumber)([value])))(
-                  cell
+    mapWhen(
+      lensEq(selectedLens, true)(bEq),
+      ifElse(constant(nEq.equals(value, 0)), lens.set([]), cell =>
+        pipe(
+          cell,
+          lens.get,
+          elem(nEq)(value),
+          bFold(
+            constant(
+              lens.set(
+                pipe(
+                  getMonoid<number>().concat(lens.get(cell), [value]),
+                  sort(nOrd)
                 )
-              )
+              )(cell)
+            ),
+            constant(
+              lens.set(pipe(lens.get(cell), difference(nEq)([value])))(cell)
             )
           )
         )

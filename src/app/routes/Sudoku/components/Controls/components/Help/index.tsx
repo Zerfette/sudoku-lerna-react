@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { FaQuestion } from 'react-icons/fa'
 import {
   Divider,
   Heading,
@@ -15,7 +16,6 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react'
-import { FaQuestion } from 'react-icons/fa'
 import { Stopwatch } from '~util/hooks'
 import { useModel } from './useModel'
 

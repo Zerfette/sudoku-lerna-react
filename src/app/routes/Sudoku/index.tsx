@@ -1,10 +1,6 @@
 import React, { FC } from 'react'
 import { Center, Stack } from '@chakra-ui/react'
-import {
-  Availables,
-  Board,
-  Controls
-} from './components'
+import { Availables, Board, Controls } from './components'
 import { useModel } from './useModel'
 import { useAutoSolve } from './useAutoSolve'
 

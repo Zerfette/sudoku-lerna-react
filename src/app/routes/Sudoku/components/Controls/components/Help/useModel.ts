@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { IO } from 'fp-ts/IO'
 import { useDisclosure } from '@chakra-ui/react'
+import { IO } from 'fp-ts/IO'
 import { Stopwatch } from '~util/hooks'
 
 type UseModel = (

@@ -1,7 +1,7 @@
 import { RefObject, useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { IO } from 'fp-ts/IO'
 import { useDisclosure } from '@chakra-ui/react'
+import { IO } from 'fp-ts/IO'
 import { resetBoard } from '~core/actions'
 import { Stopwatch } from '~util/hooks'
 

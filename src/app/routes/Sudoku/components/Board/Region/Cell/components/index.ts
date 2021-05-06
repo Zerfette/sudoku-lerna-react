@@ -1,4 +1,2 @@
-import { Big } from './Big'
-import { Smalls } from './Smalls'
-
-export { Big, Smalls }
+export * from './Big'
+export * from './Smalls'

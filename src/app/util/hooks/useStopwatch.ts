@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { getMonoid as getArrayMonoid } from 'fp-ts/Array'
 import { constant, pipe } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
-import { fold as monoidFold, monoidSum } from 'fp-ts/Monoid'
+import { concatAll } from 'fp-ts/Monoid'
+import { MonoidSum } from 'fp-ts/number'
 import {
   fold,
   getMonoid as getOptionMonoid,
@@ -57,7 +58,7 @@ const useStopwatch: IO<Stopwatch> = () => {
   }
 
   const handleAddLap = () => {
-    const prevTotal = fold(constant(0), monoidFold(monoidSum))(laps)
+    const prevTotal = fold(constant(0), concatAll(MonoidSum))(laps)
     const currentLap = fold(
       constant(elapsedTime),
       constant(elapsedTime - prevTotal)

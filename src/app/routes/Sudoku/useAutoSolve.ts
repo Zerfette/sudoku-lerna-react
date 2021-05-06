@@ -2,15 +2,15 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { filter, head, map } from 'fp-ts/Array'
-import { eqNumber } from 'fp-ts/Eq'
 import { constant, constFalse, flow, pipe } from 'fp-ts/function'
+import { Eq as nEq } from 'fp-ts/number'
 import { fold, getOrElse } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
-import { autoSolve } from '~core/actions'
 import { rowLens, colLens, regLens } from '~core/board/optics'
 import { getAvailables, getSelected } from '~core/board/selectors'
 import { getAutoSolve } from '~core/toggles/selectors'
 import { getNumberSelected } from '~core/numberSelected/selectors'
+import { autoSolve } from '~core/actions'
 import { Cell } from '~core/types'
 import { lengthIs, lensEq } from '~util/fns'
 
@@ -29,7 +29,7 @@ export const useAutoSolve = (): void => {
   const isSingleton: IsSingleton = (lens, i) =>
     pipe(
       selection,
-      fold(constFalse, flow(filter(lensEq(lens, i)(eqNumber)), lengthIs(1)))
+      fold(constFalse, flow(filter(lensEq(lens, i)(nEq)), lengthIs(1)))
     )
 
   type CanSolve = (cell: Cell) => boolean

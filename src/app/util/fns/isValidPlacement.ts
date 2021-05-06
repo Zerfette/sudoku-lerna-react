@@ -1,8 +1,14 @@
 import { elem, filter, map } from 'fp-ts/Array'
-import { eqNumber } from 'fp-ts/Eq'
 import { flow, not, pipe } from 'fp-ts/function'
+import { Eq } from 'fp-ts/number'
 import { allPass, anyPass, equals, lensEq } from './fp'
-import { indLens, rowLens, colLens, regLens, valueLens } from '~core/board/optics'
+import {
+  indLens,
+  rowLens,
+  colLens,
+  regLens,
+  valueLens
+} from '~core/board/optics'
 import { Board, Cell } from '~core/types'
 
 type NoConflicts = (board: Board, cell: Cell, possibleValue: number) => boolean
@@ -15,21 +21,21 @@ export const noConflicts: NoConflicts = (
     board,
     filter(
       allPass([
+        flow(indLens.get, not(equals(Eq)(ind))),
+        flow(valueLens.get, not(equals(Eq)(0))),
         anyPass([
-          lensEq(rowLens, row)(eqNumber),
-          lensEq(colLens, col)(eqNumber),
-          lensEq(regLens, reg)(eqNumber)
-        ]),
-        flow(indLens.get, not(equals(eqNumber)(ind))),
-        flow(valueLens.get, not(equals(eqNumber)(0)))
+          lensEq(rowLens, row)(Eq),
+          lensEq(colLens, col)(Eq),
+          lensEq(regLens, reg)(Eq)
+        ])
       ])
     ),
     map(valueLens.get),
-    elem(eqNumber)(possibleValue),
+    elem(Eq)(possibleValue)
   )
 
 type IsValidPlacement = (
   board: Board
 ) => (possibleValue: number) => (cell: Cell) => boolean
 export const isValidPlacement: IsValidPlacement = board => possibleValue => cell =>
-  lensEq(valueLens, 0)(eqNumber)(cell) && noConflicts(board, cell, possibleValue)
+  lensEq(valueLens, 0)(Eq)(cell) && noConflicts(board, cell, possibleValue)
