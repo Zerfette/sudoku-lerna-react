@@ -53,7 +53,7 @@ export const ifElse: IfElse = (predicate, onTrue, onFalse) => data =>
   predicate(data) ? onTrue(data) : onFalse(data)
 
 // Determines if the length of an array is equal to the given value
-type LengthIs = (x: number) => <T>(arr: T[]) => boolean
+type LengthIs = (x: number) => Predicate<Array<any>>
 export const lengthIs: LengthIs = x => flow(size, equals(nEq)(x))
 
 // Determines if a lens' value satisfies a given predicate

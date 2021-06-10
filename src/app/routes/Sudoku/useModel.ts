@@ -1,7 +1,7 @@
 import { KeyboardEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { elem, range } from 'fp-ts/Array'
-import { pipe } from 'fp-ts/function'
+import { pipe, Predicate } from 'fp-ts/function'
 import { IO } from 'fp-ts/IO'
 import { Eq as nEq } from 'fp-ts/number'
 import { isSome } from 'fp-ts/Option'
@@ -17,8 +17,7 @@ import { cornerLens, middleLens } from '~core/board/optics'
 import { getSelected } from '~core/board/selectors'
 import { mouseDownLens } from '~core/toggles/optics'
 
-type IsValue = (x: string) => boolean
-const isValue: IsValue = x => elem(nEq)(+x)(range(0, 9))
+const isValue: Predicate<string> = x => elem(nEq)(+x)(range(0, 9))
 
 type UseModel = IO<{
   onMouseDown: IO<void>

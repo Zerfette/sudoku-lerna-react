@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { filter, head, map } from 'fp-ts/Array'
-import { constant, constFalse, flow, pipe } from 'fp-ts/function'
+import { constant, constFalse, flow, pipe, Predicate } from 'fp-ts/function'
 import { Eq as nEq } from 'fp-ts/number'
 import { fold, getOrElse } from 'fp-ts/Option'
 import { Lens } from 'monocle-ts'
@@ -32,8 +32,7 @@ export const useAutoSolve = (): void => {
       fold(constFalse, flow(filter(lensEq(lens, i)(nEq)), lengthIs(1)))
     )
 
-  type CanSolve = (cell: Cell) => boolean
-  const canSolve: CanSolve = ({ row, col, reg }) =>
+  const canSolve: Predicate<Cell> = ({ row, col, reg }) =>
     isSingleton(rowLens, row) ||
     isSingleton(colLens, col) ||
     isSingleton(regLens, reg)

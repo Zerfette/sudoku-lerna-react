@@ -1,5 +1,5 @@
 import { elem, filter, map } from 'fp-ts/Array'
-import { flow, not, pipe } from 'fp-ts/function'
+import { flow, not, pipe, Predicate } from 'fp-ts/function'
 import { Eq } from 'fp-ts/number'
 import { allPass, anyPass, equals, lensEq } from './fp'
 import {
@@ -36,6 +36,6 @@ export const noConflicts: NoConflicts = (
 
 type IsValidPlacement = (
   board: Board
-) => (possibleValue: number) => (cell: Cell) => boolean
+) => (possibleValue: number) => Predicate<Cell>
 export const isValidPlacement: IsValidPlacement = board => possibleValue => cell =>
   lensEq(valueLens, 0)(Eq)(cell) && noConflicts(board, cell, possibleValue)
