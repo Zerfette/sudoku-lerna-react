@@ -18,7 +18,9 @@ import {
   ifElse,
   when,
   puzzleToBoard,
-  isValidPlacement
+  isValidPlacement,
+  lensEq,
+  mapWhen
 } from '~util/fns'
 import {
   valueLens,
@@ -29,10 +31,9 @@ import {
   highlightedLens,
   lockedLens,
   cornerLens,
-  middleLens
+  middleLens,
 } from '~core/board/optics'
 import { Board, Cell, Mutation, Puzzle, Smalls } from '~core/types'
-import { lensEq, mapWhen } from '~util/fns'
 
 /******************* autoSolve *******************/
 export const autoSolve: Mutation<Board, { ind: number; value: number }> = (

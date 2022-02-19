@@ -37,7 +37,7 @@ export const getAvailables = createSelector([getBoard], board =>
     fold(
       () => ({ row: [], col: [], reg: [], cell: [] }),
       selection => {
-        const singleSelected = pipe(selection, lengthIs(1))
+        const singleSelected = lengthIs(1)(selection)
         const [head] = selection
         const isValid = (x: number) => isValidPlacement(board)(x)(head)
 

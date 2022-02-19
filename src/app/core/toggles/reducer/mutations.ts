@@ -1,11 +1,10 @@
-import { pipe } from 'fp-ts/function'
 import { Lens } from 'monocle-ts'
 import { Mutation, Toggles } from '~core/types'
 
 export const toggle: Mutation<Toggles, { lens: Lens<Toggles, boolean> }> = (
   toggles,
   { lens }
-) => pipe(toggles, lens.set(!pipe(toggles, lens.get)))
+) => lens.set(!lens.get(toggles))(toggles)
 
 export const setToggle: Mutation<
   Toggles,
@@ -13,4 +12,4 @@ export const setToggle: Mutation<
     lens: Lens<Toggles, boolean>
     value: boolean
   }
-> = (toggles, { lens, value }) => pipe(toggles, lens.set(value))
+> = (toggles, { lens, value }) => lens.set(value)(toggles)
