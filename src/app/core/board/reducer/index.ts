@@ -1,4 +1,3 @@
-import { AnyAction } from 'redux'
 import { Board } from '~core/types'
 import { puzzleToBoard } from '~util/fns'
 import {
@@ -14,6 +13,7 @@ import {
   updateBig,
   updateSmall
 } from './mutations'
+import { Action, ActionType } from '../../actions/types'
 
 const testPuzzle = [
   [0, 3, 9, 0, 7, 0, 2, 5, 1],
@@ -39,34 +39,34 @@ const funPuzzle = [
   [0, 0, 3, 0, 7, 0, 2, 0, 0]
 ]
 
-type Reducer = (board: Board, action: AnyAction) => Board
+type Reducer = (board: Board, action: Action) => Board
 const reducer: Reducer = (
   board = puzzleToBoard(testPuzzle),
-  { type, payload }
+  action
 ) => {
-  switch (type) {
-    case 'AUTO_SOLVE':
-      return autoSolve(board, payload)
-    case 'CHANGE_PUZZLE':
-      return setPuzzle(board, payload)
-    case 'CLEAR_SELECTION':
-      return clearSelection(board, payload)
-    case 'CLEAR_BOARD':
+  switch (action.type) {
+    case ActionType.AUTO_SOLVE:
+      return autoSolve(board, action.payload)
+    case ActionType.SET_PUZZLE:
+      return setPuzzle(board, action.payload)
+    case ActionType.CLEAR_SELECTION:
+      return clearSelection(board)
+    case ActionType.CLEAR_BOARD:
       return clearBoard()
-    case 'LOCK_BOARD':
-      return lockBoard(board, payload)
-    case 'NUMBER_SELECT':
-      return numberSelect(board, payload)
-    case 'RESET_BOARD':
-      return resetBoard(board, payload)
-    case 'SELECT_ALL':
-      return selectAll(board, payload)
-    case 'SELECT_CELL':
-      return selectCell(board, payload)
-    case 'UPDATE_BIG':
-      return updateBig(board, payload)
-    case 'UPDATE_SMALL':
-      return updateSmall(board, payload)
+    case ActionType.LOCK_BOARD:
+      return lockBoard(board)
+    case ActionType.NUMBER_SELECT:
+      return numberSelect(board, action.payload)
+    case ActionType.RESET_BOARD:
+      return resetBoard(board)
+    case ActionType.SELECT_ALL:
+      return selectAll(board)
+    case ActionType.SELECT_CELL:
+      return selectCell(board, action.payload)
+    case ActionType.UPDATE_BIG:
+      return updateBig(board, action.payload)
+    case ActionType.UPDATE_SMALL:
+      return updateSmall(board, action.payload)
     default:
       return board
   }

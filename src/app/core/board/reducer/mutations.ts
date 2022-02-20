@@ -9,6 +9,7 @@ import {
   sort
 } from 'fp-ts/Array'
 import { Eq as bEq, fold as bFold } from 'fp-ts/boolean'
+import { Endomorphism } from 'fp-ts/Endomorphism'
 import { constant, identity, flow, not, pipe } from 'fp-ts/function'
 import { Eq as nEq, Ord as nOrd } from 'fp-ts/number'
 import { fold as optFold } from 'fp-ts/Option'
@@ -76,12 +77,12 @@ export const clearBoard: () => Board = constant(
 )
 
 /******************* clearSelection *******************/
-export const clearSelection: Mutation<Board, {}> = map(
+export const clearSelection: Endomorphism<Board> = map(
   flow(selectedLens.set(false), highlightedLens.set(false))
 )
 
 /******************* lockBoard *******************/
-export const lockBoard: Mutation<Board, {}> = map(
+export const lockBoard: Endomorphism<Board> = map(
   flow(
     selectedLens.set(false),
     when(not(lensEq(valueLens, 0)(nEq)), lockedLens.set(true))
@@ -103,7 +104,7 @@ export const numberSelect: Mutation<Board, { value: number }> = (
   )(board)
 
 /******************* resetBoard *******************/
-export const resetBoard: Mutation<Board, {}> = mapWhen(
+export const resetBoard: Endomorphism<Board> = mapWhen(
   lensEq(lockedLens, false)(bEq),
   flow(
     selectedLens.set(false),
@@ -115,7 +116,7 @@ export const resetBoard: Mutation<Board, {}> = mapWhen(
 )
 
 /******************* selectAll *******************/
-export const selectAll: Mutation<Board, {}> = mapWhen(
+export const selectAll: Endomorphism<Board> = mapWhen(
   lensEq(lockedLens, false)(bEq),
   selectedLens.set(true)
 )

@@ -1,16 +1,16 @@
-import { AnyAction } from 'redux'
 import { Toggles } from '~core/types'
+import { Action, ActionType } from '../../actions/types'
 import { toggle, setToggle } from './mutations'
 
 const dflt = { autoSolve: false, mouseDown: false}
 
-type Reducer = (toggles: Toggles, action: AnyAction) => Toggles
-const reducer: Reducer = (toggles = dflt, { type, payload }) => {
-  switch (type) {
-    case 'TOGGLE':
-      return toggle(toggles, payload)
-    case 'SET_TOGGLE':
-      return setToggle(toggles, payload)
+type Reducer = (toggles: Toggles, action: Action) => Toggles
+const reducer: Reducer = (toggles = dflt, action) => {
+  switch (action.type) {
+    case ActionType.TOGGLE:
+      return toggle(toggles, action.payload)
+    case ActionType.SET_TOGGLE:
+      return setToggle(toggles, action.payload)
     default:
       return toggles
   }
