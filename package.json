@@ -7,6 +7,7 @@
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "axios": "^0.21.1",
+    "fns": "^1.0.0",
     "fp-ts": "^2.11.8",
     "framer-motion": "^3.2.0",
     "link-module-alias": "^1.2.0",
@@ -21,14 +22,15 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "reselect": "^4.0.0",
+    "core": "^1.0.0",
     "typescript": "^4.2.4",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "postinstall": "link-module-alias"
   },
   "eslintConfig": {
@@ -47,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^6.4.3",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^12.6.0",
@@ -59,9 +62,6 @@
   },
   "_moduleAliasIgnoreWarning": true,
   "_moduleAliases": {
-    "~core": "src/app/core",
-    "~lib": "src/app/lib",
-    "~routes": "src/app/routes",
-    "~util": "src/app/util"
+    "~store": "src/store"
   }
 }
