@@ -1,8 +1,7 @@
 import { IconType } from 'react-icons'
 import { FaPlay, FaPause } from 'react-icons/fa'
-import { getTimerText } from 'core'
+import { getTimerText, Stopwatch } from 'core/stopwatch'
 import { IO } from 'fp-ts/IO'
-import { Stopwatch } from '../../useStopwatch'
 
 type UseModel = (stopwatch: Stopwatch) => {
   text: string

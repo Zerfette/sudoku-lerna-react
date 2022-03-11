@@ -1,31 +1,20 @@
 import { useState, useEffect } from 'react'
-import { getMonoid as getArrayMonoid } from 'fp-ts/Array'
-import { constant, pipe } from 'fp-ts/function'
+import { arrayOptionMonoid, getPrevTotal, Laps } from 'core/stopwatch'
+import { fold as boolFold } from 'fp-ts/boolean'
 import { IO } from 'fp-ts/IO'
-import { concatAll } from 'fp-ts/Monoid'
-import { MonoidSum } from 'fp-ts/number'
-import {
-  fold,
-  getMonoid as getOptionMonoid,
-  none,
-  Option,
-  some
-} from 'fp-ts/Option'
-
-const arrayOptionMonoid = pipe(getArrayMonoid<number>(), getOptionMonoid)
+import { fold, none, Option, some } from 'fp-ts/Option'
 
 const useTimer = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [elapsedTime, setElapsedTime] = useState(0)
+  const increment = () =>
+    setElapsedTime(prevElapsedTime => prevElapsedTime + 0.1)
+  let interval: NodeJS.Timeout
 
   useEffect(() => {
-    let interval: NodeJS.Timeout
-    if (isRunning) {
-      interval = setInterval(
-        () => setElapsedTime(prevElapsedTime => prevElapsedTime + 0.1),
-        100
-      )
-    }
+    const onFalse = () => clearInterval(interval)
+    const onTrue = () => (interval = setInterval(increment, 100))
+    boolFold(onFalse, onTrue)(isRunning)
     return () => clearInterval(interval)
   }, [isRunning])
 
@@ -39,7 +28,7 @@ const useTimer = () => {
 
 export type Stopwatch = {
   elapsedTime: number
-  laps: Option<number[]>
+  laps: Laps
   addLap: IO<void>
   resetTimer: IO<void>
   startTimer: IO<void>
@@ -49,7 +38,7 @@ export type Stopwatch = {
 }
 
 const useStopwatch: IO<Stopwatch> = () => {
-  const [laps, setLaps] = useState<Option<number[]>>(none)
+  const [laps, setLaps] = useState<Laps>(none)
   const { isRunning, setIsRunning, elapsedTime, setElapsedTime } = useTimer()
 
   const resetTimer = () => {
@@ -59,17 +48,15 @@ const useStopwatch: IO<Stopwatch> = () => {
   }
 
   const addLap = () => {
-    const prevTotal = fold(constant(0), concatAll(MonoidSum))(laps)
-    const currentLap = fold(
-      constant(elapsedTime),
-      constant(elapsedTime - prevTotal)
-    )(laps)
-
+    const onNone = () => elapsedTime
+    const onSome = () => elapsedTime - getPrevTotal(laps)
+    const currentLap = fold(onNone, onSome)(laps)
     isRunning && setLaps(arrayOptionMonoid.concat(laps, some([currentLap])))
   }
-const startTimer = () => setIsRunning(true)
-const stopTimer = () => setIsRunning(false)
-const toggleTimer = () => (isRunning ? stopTimer() : startTimer())
+
+  const startTimer = () => setIsRunning(true)
+  const stopTimer = () => setIsRunning(false)
+  const toggleTimer = () => (isRunning ? stopTimer() : startTimer())
 
   return {
     elapsedTime: +elapsedTime.toFixed(1),

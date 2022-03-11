@@ -13,20 +13,13 @@ import { elem } from 'fp-ts/Array'
 import { range } from 'fp-ts/NonEmptyArray'
 import { Predicate } from 'fp-ts/Predicate'
 import { pipe } from 'fp-ts/function'
-import { IO } from 'fp-ts/IO'
 import { Eq as nEq } from 'fp-ts/number'
 import { isSome } from 'fp-ts/Option'
 import { getSelected } from '~store/board/selectors'
 
 const isValue: Predicate<string> = x => elem(nEq)(+x)(range(0, 9))
 
-type UseModel = IO<{
-  onMouseDown: IO<void>
-  onMouseUp: IO<void>
-  onKeyDown: (ev: KeyboardEvent<HTMLDivElement>) => void
-}>
-
-export const useModel: UseModel = () => {
+export const useModel = () => {
   const dispatch = useDispatch()
   const selection = useSelector(getSelected)
 
@@ -35,7 +28,7 @@ export const useModel: UseModel = () => {
       pipe({ lens: mouseDownLens, value: true }, setToggle, dispatch),
     onMouseUp: () =>
       pipe({ lens: mouseDownLens, value: false }, setToggle, dispatch),
-    onKeyDown: ev => {
+    onKeyDown: (ev: KeyboardEvent<HTMLDivElement>) => {
       const { key, altKey, ctrlKey } = ev
       ev.stopPropagation()
       if (key !== 'F12') ev.preventDefault()

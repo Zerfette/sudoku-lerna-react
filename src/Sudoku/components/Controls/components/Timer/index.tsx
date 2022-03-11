@@ -6,9 +6,7 @@ import { useModel } from './useModel'
 
 type Props = { stopwatch: Stopwatch }
 export const Timer: FC<Props> = ({ stopwatch }) => {
-  const { resetTimer, toggleTimer, text, Icon, iconLabel } = useModel(
-    stopwatch
-  )
+  const { resetTimer, toggleTimer, text, Icon, iconLabel } = useModel(stopwatch)
 
   return (
     <Center>
