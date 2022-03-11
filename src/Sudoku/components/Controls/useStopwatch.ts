@@ -44,6 +44,7 @@ export type Stopwatch = {
   resetTimer: IO<void>
   startTimer: IO<void>
   stopTimer: IO<void>
+  toggleTimer: IO<void>
   isRunning: boolean
 }
 
@@ -51,13 +52,13 @@ const useStopwatch: IO<Stopwatch> = () => {
   const [laps, setLaps] = useState<Option<number[]>>(none)
   const { isRunning, setIsRunning, elapsedTime, setElapsedTime } = useTimer()
 
-  const handleReset = () => {
+  const resetTimer = () => {
     setIsRunning(false)
     setElapsedTime(0)
     setLaps(none)
   }
 
-  const handleAddLap = () => {
+  const addLap = () => {
     const prevTotal = fold(constant(0), concatAll(MonoidSum))(laps)
     const currentLap = fold(
       constant(elapsedTime),
@@ -66,14 +67,18 @@ const useStopwatch: IO<Stopwatch> = () => {
 
     isRunning && setLaps(arrayOptionMonoid.concat(laps, some([currentLap])))
   }
+const startTimer = () => setIsRunning(true)
+const stopTimer = () => setIsRunning(false)
+const toggleTimer = () => (isRunning ? stopTimer() : startTimer())
 
   return {
     elapsedTime: +elapsedTime.toFixed(1),
     laps,
-    addLap: () => handleAddLap(),
-    resetTimer: () => handleReset(),
-    startTimer: () => setIsRunning(true),
-    stopTimer: () => setIsRunning(false),
+    addLap,
+    resetTimer,
+    startTimer,
+    stopTimer,
+    toggleTimer,
     isRunning
   }
 }

@@ -1,16 +1,11 @@
 import { IconType } from 'react-icons'
 import { FaPlay, FaPause } from 'react-icons/fa'
-import { intersperse, map } from 'fp-ts/Array'
-import { pipe } from 'fp-ts/function'
+import { getTimerText } from 'core'
 import { IO } from 'fp-ts/IO'
-import { MonoidProduct } from 'fp-ts/number'
-import { concat, magmaModulo, zeroPad } from 'fns'
 import { Stopwatch } from '../../useStopwatch'
 
-type UseModel = (
-  stopwatch: Stopwatch
-) => {
-  text: string[]
+type UseModel = (stopwatch: Stopwatch) => {
+  text: string
   resetTimer: IO<void>
   toggleTimer: IO<void>
   Icon: IconType
@@ -19,31 +14,12 @@ type UseModel = (
 export const useModel: UseModel = ({
   elapsedTime,
   resetTimer,
-  startTimer,
-  stopTimer,
+  toggleTimer,
   isRunning
-}) => {
-  const hours = pipe(
-    elapsedTime,
-    concat(magmaModulo)(86400),
-    concat(MonoidProduct)(1 / 3600),
-    Math.floor
-  )
-  const minutes = pipe(
-    elapsedTime,
-    concat(magmaModulo)(3600),
-    concat(MonoidProduct)(1 / 60),
-    Math.floor
-  )
-  const seconds = pipe(elapsedTime, concat(magmaModulo)(60), Math.floor)
-
-  return {
-    text: pipe([hours, minutes, seconds], map(zeroPad), intersperse(':')),
-    resetTimer,
-    toggleTimer: () => {
-      isRunning ? stopTimer() : startTimer()
-    },
-    Icon: isRunning ? FaPause : FaPlay,
-    iconLabel: isRunning ? 'Pause Timer' : 'Resume Timer'
-  }
-}
+}) => ({
+  text: getTimerText(elapsedTime),
+  resetTimer,
+  toggleTimer,
+  Icon: isRunning ? FaPause : FaPlay,
+  iconLabel: isRunning ? 'Pause Timer' : 'Resume Timer'
+})
